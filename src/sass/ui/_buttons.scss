@@ -1,0 +1,17 @@
+@use "../abstracts/variables" as *;
+
+.main-btn {
+  all: unset;
+  background-color: $color-primary;
+  border-radius: 0.2rem;
+  cursor: pointer;
+
+  p {
+    font-weight: 600;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.1rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+}

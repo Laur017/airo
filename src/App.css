@@ -1,3 +1,101 @@
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+html {
+  background-color: #30363d;
+  color: white;
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.6944444444vw;
+}
+
+.app {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.app .main {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #30363d;
+  width: 36rem;
+  padding: 2rem;
+  gap: 5rem;
+  height: 100%;
+}
+.settings__top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.settings__top h2 {
+  font-family: Fira Sans;
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  vertical-align: middle;
+  color: #ffffff;
+}
+.settings__top span {
+  cursor: pointer;
+}
+.settings__bottom {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+}
+.settings__bottom p {
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 2.4rem;
+  color: #fcfcfe;
+  text-align: center;
+}
+.settings__bottom button {
+  margin-top: 5rem;
+  width: 100%;
+}
+.settings__bottom a {
+  all: unset;
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  vertical-align: middle;
+  color: #ffffff;
+  cursor: pointer;
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -66,32 +164,19 @@ input:checked + .slider:before {
   transform: translateX(2.5rem);
 }
 
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: inherit;
-  font-family: "Josefin Sans", sans-serif;
+.main-btn {
+  all: unset;
+  background-color: #6202ee;
+  border-radius: 0.2rem;
+  cursor: pointer;
 }
-
-html {
-  font-size: 0.5208333333vw;
-}
-
-body {
-  min-height: 100vh;
-}
-
-a {
-  text-decoration: none;
-}
-
-html {
-  background-color: #30363d;
-  color: white;
-  font-family: "Fira Sans", sans-serif;
-  font-size: 0.6944444444vw;
+.main-btn p {
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  vertical-align: middle;
 }
 
 /*# sourceMappingURL=App.css.map */

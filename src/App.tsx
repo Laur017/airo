@@ -4,10 +4,12 @@ import Settings from './components/Settings/Settings';
 
 function App() {
 	return (
-		<>
+		<div className='app'>
 			<Header />
-			<Settings />
-		</>
+			<div className='main'>
+				<Settings />
+			</div>
+		</div>
 	);
 }
 export default App;
