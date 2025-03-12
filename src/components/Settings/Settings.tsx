@@ -2,13 +2,17 @@ import SettingsImage from "../../assets/settings-img.png";
 
 interface SettingsParams {
   handleOnboarding: (val: boolean) => void;
+  handleSettings: (val: boolean) => void;
 }
-export default function Settings({ handleOnboarding }: SettingsParams) {
+export default function Settings({
+  handleOnboarding,
+  handleSettings,
+}: SettingsParams) {
   return (
     <div className="settings">
       <div className="settings__top">
         <h2>Settings</h2>
-        <span>
+        <span onClick={() => handleSettings(false)}>
           <svg
             width="23"
             height="23"
