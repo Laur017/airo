@@ -1,6 +1,11 @@
 @forward "../components/Header/Header";
+
 @forward "./abstracts/variables";
 
-html {
-  font-size: calc(1000vw / 1440);
-}
+@forward "./base/base";
+
+@forward "./pages/app";
+
+@forward "./components/settings";
+
+@forward "./ui/buttons";
