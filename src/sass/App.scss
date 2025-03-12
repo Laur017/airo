@@ -1,12 +1,30 @@
-@forward '../components/Header/Header';
-@forward './variables/variables';
-@import "abstracts/variables";
+@import './abstracts/variables';
+@import './components/Header';
 
-html {
-  background-color: $color-dark-1;
-  color: white;
-  font-family: "Fira Sans", sans-serif;
-  
-	font-size: calc(1000vw / 1440);
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+	font-family: 'Josefin Sans', sans-serif;
 }
 
+html {
+	font-size: calc(1000vw / 1920);
+}
+
+body {
+	min-height: 100vh;
+}
+
+a {
+	text-decoration: none;
+}
+
+html {
+	background-color: $color-dark-1;
+	color: white;
+	font-family: 'Fira Sans', sans-serif;
+	font-size: calc(1000vw / 1440);
+}

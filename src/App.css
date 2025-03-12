@@ -1,3 +1,27 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #242c35;
+  padding: 0 2rem;
+  height: 6rem;
+  box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.15);
+}
+.header__logo {
+  width: 20rem;
+  height: 3.2rem;
+}
+.header__search {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.clasterization {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
 
 .switch {
   position: relative;
@@ -18,27 +42,56 @@
   bottom: 0;
   background-color: transparent;
   border: 1px solid rgb(172, 175, 177);
-  border-radius: 25px;
+  border-radius: 2.5rem;
   transition: background-color 0.3s;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 21px;
-  width: 21px;
-  left: 2px;
-  background-color: #acafb1;
+  height: 1.8rem;
+  width: 1.8rem;
+  left: 0.6rem;
+  top: 0.4rem;
+  background-color: #6a6a6a;
   border-radius: 50%;
   transition: transform 0.3s;
 }
 
 input:checked + .slider {
-  background-color: #4caf50;
+  background-color: #ffffff;
 }
 
 input:checked + .slider:before {
-  transform: translateX(2rem);
+  transform: translateX(2.5rem);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+html {
+  font-size: 0.5208333333vw;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+html {
+  background-color: #30363d;
+  color: white;
+  font-family: "Fira Sans", sans-serif;
+  font-size: 0.6944444444vw;
 }
 
 /*# sourceMappingURL=App.css.map */
