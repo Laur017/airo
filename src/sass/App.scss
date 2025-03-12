@@ -1,12 +1,6 @@
-@forward '../components/Header/Header';
-@forward './variables/variables';
-@import "abstracts/variables";
+@forward "../components/Header/Header";
+@forward "./abstracts/variables";
 
 html {
-  background-color: $color-dark-1;
-  color: white;
-  font-family: "Fira Sans", sans-serif;
-  
-	font-size: calc(1000vw / 1440);
+  font-size: calc(1000vw / 1440);
 }
-
