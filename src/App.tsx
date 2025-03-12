@@ -4,6 +4,7 @@ import Header from "./components/Header/Header";
 import Map from "./components/Map/Map";
 import Settings from "./components/Settings/Settings";
 import Onboarding from "./components/Settings/Onboarding";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
@@ -25,6 +26,7 @@ function App() {
             handleSettings={handleSettings}
           />
         )}
+        <Footer />
       </div>
 
       {showOnboarding && <Onboarding handleOnboarding={handleOnboarding} />}
