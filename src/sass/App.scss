@@ -1,11 +1,10 @@
-@forward "../components/Header/Header";
+@forward './abstracts/variables';
 
-@forward "./abstracts/variables";
+@forward './base/base';
 
-@forward "./base/base";
+@forward './pages/app';
 
-@forward "./pages/app";
+@forward './components/settings';
+@forward './components/Header';
 
-@forward "./components/settings";
-
-@forward "./ui/buttons";
+@forward './ui/buttons';
