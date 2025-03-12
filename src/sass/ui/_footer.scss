@@ -1,0 +1,22 @@
+@use "../abstracts/variables" as *;
+
+.footer {
+  display: flex;
+  position: absolute;
+  align-items: flex-end;
+  gap: 2rem;
+
+  bottom: 3%;
+  left: 2%;
+  z-index: 2;
+
+  img {
+    width: 11rem;
+  }
+
+  p {
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: $color-grey-4;
+  }
+}
