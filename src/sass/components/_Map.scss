@@ -1,0 +1,45 @@
+@use '../abstracts/variables' as *;
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	background-color: $color-primary !important;
+	color: $color-white !important;
+	border-bottom: none !important;
+}
+
+.leaflet-control-attribution {
+	display: none !important;
+}
+
+.leaflet-control-zoom {
+	border: none !important;
+	display: flex;
+	flex-direction: column;
+}
+
+.leaflet-custom-button {
+	all: unset;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 3rem;
+	margin: 1.5rem 2rem 3rem 0;
+	width: 3rem;
+	background-color: $color-primary;
+	border-radius: 2px;
+}
+
+.custom-marker-icon {
+	width: 36px;
+	height: 52px;
+	background: linear-gradient(180deg, #acf254 0%, #20944e 100%);
+	border-top-left-radius: 50%;
+	border-top-right-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 16px;
+	font-weight: bold;
+	color: black;
+}
