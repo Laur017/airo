@@ -1,12 +1,15 @@
-@forward './abstracts/variables';
+@forward "./abstracts/variables";
 
-@forward './base/base';
+@forward "./base/base";
 
-@forward './pages/app';
+@forward "./pages/app";
 
-@forward './components/settings';
-@forward './components/Header';
-@forward './components/Spinner';
-@forward './components/Map';
+@forward "./components/settings";
+@forward "./components/Header";
+@forward "./components/Spinner";
+@forward "./components/Map";
 
-@forward './ui/buttons';
+@forward "./components/settings";
+@forward "./components/onboarding";
+
+@forward "./ui/buttons";
