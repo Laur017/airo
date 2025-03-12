@@ -1,6 +1,9 @@
 import SettingsImage from "../../assets/settings-img.png";
 
-export default function Settings() {
+interface SettingsParams {
+  handleOnboarding: (val: boolean) => void;
+}
+export default function Settings({ handleOnboarding }: SettingsParams) {
   return (
     <div className="settings">
       <div className="settings__top">
@@ -29,7 +32,7 @@ export default function Settings() {
         <button className="main-btn">
           <p>Sign In</p>
         </button>
-        <a href="#">About this application →</a>
+        <a onClick={() => handleOnboarding(true)}>About this application →</a>
       </div>
     </div>
   );
