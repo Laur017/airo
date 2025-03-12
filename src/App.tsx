@@ -1,7 +1,12 @@
 import "./App.css";
+import Settings from "./components/Settings/Settings";
 
 function App() {
-  return <></>;
+  return (
+    <>
+      <Settings />
+    </>
+  );
 }
 
 export default App;
