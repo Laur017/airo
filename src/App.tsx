@@ -10,12 +10,15 @@ import axios from "axios";
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
-  const [showSettings, setShowSettings] = useState<boolean>(true);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
   const [user, setUser] = useState<any>([]);
   const [profile, setProfile] = useState<any[] | null>([]);
 
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => setUser(codeResponse),
+    onSuccess: (codeResponse) => {
+      console.log(codeResponse);
+      return setUser(codeResponse);
+    },
     onError: (error) => console.log("Login Failed:", error),
   });
 
