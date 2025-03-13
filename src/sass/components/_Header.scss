@@ -30,6 +30,10 @@
       align-items: center;
       gap: 1rem;
 
+      svg {
+        transition: all 0.5s ease;
+      }
+
       &__pic {
         height: 4rem;
         width: 4rem;
@@ -40,6 +44,14 @@
         font-size: 1.6rem;
         font-weight: 600;
         color: $color-grey-3;
+        cursor: pointer;
+
+        &-open {
+          transform: rotate(180deg);
+        }
+        &-close {
+          transform: rotate(0deg);
+        }
       }
     }
   }

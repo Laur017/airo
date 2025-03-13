@@ -3,9 +3,10 @@ import logo from "../../assets/logo.png";
 interface HeaderProps {
   handleSettings: (val: boolean) => void;
   profile: any;
+  open: boolean;
 }
 
-export default function Header({ handleSettings, profile }: HeaderProps) {
+export default function Header({ handleSettings, profile, open }: HeaderProps) {
   console.log(profile);
   return (
     <div className="header">
@@ -85,11 +86,17 @@ export default function Header({ handleSettings, profile }: HeaderProps) {
               alt="Profile picture"
               className="header__login__profile__pic"
             />
-            <span className="header__login__profile__name">
+            <span
+              className="header__login__profile__name"
+              onClick={() => handleSettings(!open)}
+            >
               {profile.given_name}
             </span>
             <svg
-              onClick={() => handleSettings(true)}
+              className={`header__login__profile__name-${
+                open ? "open" : "close"
+              } `}
+              onClick={() => handleSettings(!open)}
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -108,12 +115,15 @@ export default function Header({ handleSettings, profile }: HeaderProps) {
           <div className="header__login__profile">
             <span
               className="header__login__profile__name"
-              onClick={() => handleSettings(true)}
+              onClick={() => handleSettings(!open)}
             >
               Settings
             </span>
             <svg
-              onClick={() => handleSettings(true)}
+              className={`header__login__profile__name-${
+                open ? "open" : "close"
+              } `}
+              onClick={() => handleSettings(!open)}
               width="24"
               height="24"
               viewBox="0 0 24 24"
