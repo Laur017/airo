@@ -1,12 +1,15 @@
 import SettingsImage from "../../assets/settings-img.png";
+import Login from "./Login";
 
 interface SettingsParams {
   handleOnboarding: (val: boolean) => void;
   handleSettings: (val: boolean) => void;
+  login: any;
 }
 export default function Settings({
   handleOnboarding,
   handleSettings,
+  login,
 }: SettingsParams) {
   return (
     <div className="settings">
@@ -34,6 +37,7 @@ export default function Settings({
           personal devices and recieve notifications.
         </p>
         <button className="main-btn">
+          <Login login={login} />
           <p>Sign In</p>
         </button>
         <a onClick={() => handleOnboarding(true)}>About this application →</a>

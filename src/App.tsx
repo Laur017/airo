@@ -1,14 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import Header from "./components/Header/Header";
 import Map from "./components/Map/Map";
 import Settings from "./components/Settings/Settings";
 import Onboarding from "./components/Settings/Onboarding";
 import Footer from "./components/Footer/Footer";
+import axios from "axios";
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(true);
+  const [user, setUser] = useState<any>([]);
+  const [profile, setProfile] = useState<any[] | null>([]);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log("Login Failed:", error),
+  });
+
+  useEffect(() => {
+    if (user) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          setProfile(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
+
+  const logOut = () => {
+    googleLogout();
+    setProfile(null);
+  };
   const handleOnboarding = (bool: boolean) => {
     setShowOnboarding(bool);
   };
@@ -17,13 +50,15 @@ function App() {
   };
   return (
     <div className="app">
-      <Header handleSettings={handleSettings} />
+      <Header handleSettings={handleSettings} profile={profile} />
       <div className="main">
         <Map />
         {showSettings && (
           <Settings
             handleOnboarding={handleOnboarding}
             handleSettings={handleSettings}
+            login={login}
+            logout={logOut}
           />
         )}
         <Footer />

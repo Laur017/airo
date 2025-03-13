@@ -11,6 +11,7 @@
 		"watch": "sass --watch --update ./src/sass/App.scss ./src/App.css"
 	},
 	"dependencies": {
+		"@react-oauth/google": "^0.12.1",
 		"@reduxjs/toolkit": "^2.6.0",
 		"axios": "^1.8.1",
 		"leaflet": "^1.9.4",
