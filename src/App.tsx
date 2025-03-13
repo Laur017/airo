@@ -53,7 +53,11 @@ function App() {
   };
   return (
     <div className="app">
-      <Header handleSettings={handleSettings} profile={profile} />
+      <Header
+        handleSettings={handleSettings}
+        profile={profile}
+        open={showSettings}
+      />
       <div className="main">
         <Map />
         {showSettings && (
@@ -62,6 +66,7 @@ function App() {
             handleSettings={handleSettings}
             login={login}
             logout={logOut}
+            profile={profile}
           />
         )}
         <Footer />
