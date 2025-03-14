@@ -51,7 +51,11 @@ export default function Settings({
           </div>
         </>
       ) : (
-        <Devices profile={profile} signout={logout} />
+        <Devices
+          profile={profile}
+          signout={logout}
+          handleSettings={handleSettings}
+        />
       )}
     </div>
   );

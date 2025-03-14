@@ -1,0 +1,162 @@
+@use "../abstracts/variables" as *;
+
+.addNew {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.45);
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &-card {
+    width: 95rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3rem;
+    background-color: $color-dark-1;
+    border-radius: 0.3rem;
+    padding: 3rem;
+
+    & > span {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+    }
+
+    h3 {
+      font-family: "Fira Sans", sans-serif;
+      font-weight: 700;
+      font-size: 2.4rem;
+      line-height: 2.4rem;
+      letter-spacing: 0.1rem;
+      vertical-align: middle;
+    }
+
+    &__type {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      button {
+        width: 10.5rem;
+        height: 3.4rem;
+      }
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      width: 97%;
+      p {
+        font-weight: 400;
+        font-size: 1.4rem;
+        line-height: 2.4rem;
+        letter-spacing: 0.1rem;
+        vertical-align: middle;
+      }
+      input,
+      textarea {
+        width: 100%;
+        border: none;
+        background-color: $color-grey-5;
+        padding: 0.5rem 0 0.5rem 1.5rem;
+        color: $color-white;
+        font-weight: 400;
+        font-size: 1.4rem;
+        line-height: 2.4rem;
+        letter-spacing: 0.1rem;
+      }
+
+      textarea {
+        resize: none;
+      }
+
+      .device-data-format {
+        width: 100%;
+        display: flex;
+        align-items: center;
+
+        span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+      }
+    }
+    &__btns {
+      width: 98.5%;
+      display: flex;
+      justify-content: flex-end;
+      gap: 3rem;
+      margin: 4rem 0;
+    }
+  }
+}
+
+.gateway-form {
+  width: 100%;
+}
+
+.device-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+  row-gap: 1rem;
+}
+
+.form-dropdown {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: $color-grey-5;
+  align-items: flex-start !important;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  position: relative;
+
+  p {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    span {
+      margin-right: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+  }
+
+  &__options {
+    position: absolute;
+    background-color: $color-grey-5;
+    width: 100%;
+    left: 0;
+    top: 3rem;
+    overflow: hidden;
+    z-index: 2;
+
+    p {
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      cursor: pointer;
+      color: rgba($color-white, 0.6);
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    p:hover {
+      color: $color-white;
+      background-color: $color-primary;
+    }
+  }
+}
+
+.active-dropdown {
+  transform: rotate(180deg);
+}
