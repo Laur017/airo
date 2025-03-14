@@ -17,3 +17,69 @@
     padding: 1rem 0;
   }
 }
+
+.type-btn-active {
+  border: none;
+  background-color: $color-primary;
+  border-radius: 0.2rem;
+  cursor: pointer;
+
+  p {
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.1rem;
+    text-align: center;
+    vertical-align: middle;
+    color: $color-white;
+  }
+}
+
+.type-btn {
+  border: none;
+  background-color: $color-grey-5;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  p {
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.1rem;
+    text-align: center;
+    vertical-align: middle;
+    color: rgba($color-white, 0.6);
+  }
+}
+
+.add-btn {
+  border: none;
+  background-color: $color-primary;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  width: 20rem;
+  height: 4rem;
+  p {
+    font-weight: 600;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.1rem;
+    color: $color-white;
+  }
+}
+
+.cancel-btn {
+  border: 1px solid $color-white;
+  background-color: transparent;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  width: 20rem;
+  height: 4rem;
+
+  p {
+    font-weight: 600;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.1rem;
+    color: $color-white;
+  }
+}

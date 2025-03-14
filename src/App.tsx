@@ -50,6 +50,7 @@ function App() {
   };
   const handleSettings = (bool: boolean) => {
     setShowSettings(bool);
+    console.log(bool ? "showing" : "hidding");
   };
   return (
     <div className="app">

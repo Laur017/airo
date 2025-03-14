@@ -110,7 +110,7 @@ html {
   padding: 0 2rem;
   height: 6rem;
   box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.15);
-  z-index: 2;
+  z-index: 1;
 }
 .header__logo {
   width: 20rem;
@@ -564,6 +564,70 @@ input:checked + .slider:before {
   padding: 1rem 0;
 }
 
+.type-btn-active {
+  border: none;
+  background-color: #6202ee;
+  border-radius: 0.2rem;
+  cursor: pointer;
+}
+.type-btn-active p {
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #ffffff;
+}
+
+.type-btn {
+  border: none;
+  background-color: #3c444c;
+  border-radius: 0.2rem;
+  cursor: pointer;
+}
+.type-btn p {
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  vertical-align: middle;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.add-btn {
+  border: none;
+  background-color: #6202ee;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  width: 20rem;
+  height: 4rem;
+}
+.add-btn p {
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  color: #ffffff;
+}
+
+.cancel-btn {
+  border: 1px solid #ffffff;
+  background-color: transparent;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  width: 20rem;
+  height: 4rem;
+}
+.cancel-btn p {
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  color: #ffffff;
+}
+
 .footer {
   display: flex;
   position: absolute;
@@ -580,6 +644,155 @@ input:checked + .slider:before {
   font-weight: 400;
   font-size: 1.4rem;
   color: #828282;
+}
+
+.addNew {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.45);
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.addNew-card {
+  width: 95rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3rem;
+  background-color: #30363d;
+  border-radius: 0.3rem;
+  padding: 3rem;
+}
+.addNew-card > span {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
+.addNew-card h3 {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  vertical-align: middle;
+}
+.addNew-card__type {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.addNew-card__type button {
+  width: 10.5rem;
+  height: 3.4rem;
+}
+.addNew-card label {
+  display: flex;
+  flex-direction: column;
+  width: 97%;
+}
+.addNew-card label p {
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  vertical-align: middle;
+}
+.addNew-card label input,
+.addNew-card label textarea {
+  width: 100%;
+  border: none;
+  background-color: #3c444c;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+}
+.addNew-card label textarea {
+  resize: none;
+}
+.addNew-card label .device-data-format {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.addNew-card label .device-data-format span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.addNew-card__btns {
+  width: 98.5%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 3rem;
+  margin: 4rem 0;
+}
+
+.gateway-form {
+  width: 100%;
+}
+
+.device-form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+  row-gap: 1rem;
+}
+
+.form-dropdown {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #3c444c;
+  align-items: flex-start !important;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  position: relative;
+}
+.form-dropdown p {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.form-dropdown p span {
+  margin-right: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.form-dropdown__options {
+  position: absolute;
+  background-color: #3c444c;
+  width: 100%;
+  left: 0;
+  top: 3rem;
+  overflow: hidden;
+  z-index: 2;
+}
+.form-dropdown__options p {
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+.form-dropdown__options p:hover {
+  color: #ffffff;
+  background-color: #6202ee;
+}
+
+.active-dropdown {
+  transform: rotate(180deg);
 }
 
 /*# sourceMappingURL=App.css.map */
