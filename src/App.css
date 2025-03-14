@@ -38,6 +38,7 @@ html {
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
+  min-height: 93vh;
 }
 
 .settings {
