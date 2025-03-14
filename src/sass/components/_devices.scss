@@ -1,0 +1,76 @@
+@use "../abstracts/variables" as *;
+
+.devices {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+
+  &-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    & > p {
+      font-weight: 700;
+      font-size: 1.5rem;
+      line-height: 2.4rem;
+      letter-spacing: 0.1rem;
+      text-align: center;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    &__user {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      img {
+        border-radius: 50%;
+        width: 6rem;
+      }
+      & > div {
+        display: flex;
+        flex-direction: column;
+      }
+      h2 {
+        font-weight: 600;
+        font-size: 2.4rem;
+        line-height: 100%;
+        vertical-align: middle;
+        color: $color-white;
+      }
+      p {
+        font-weight: 400;
+        font-size: 1.3rem;
+        line-height: 100%;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  &-bottom {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $color-primary;
+    padding: 1rem 2rem;
+    border-radius: 0.3rem;
+    div {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+
+      p {
+        font-weight: 400;
+        font-size: 1.4rem;
+        line-height: 100%;
+        color: $color-white;
+      }
+    }
+  }
+}

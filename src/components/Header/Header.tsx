@@ -1,11 +1,13 @@
 import logo from "../../assets/logo.png";
-import profile from "../../assets/profile-pic.png";
 
 interface HeaderProps {
   handleSettings: (val: boolean) => void;
+  profile: any;
+  open: boolean;
 }
 
-export default function Header({ handleSettings }: HeaderProps) {
+export default function Header({ handleSettings, profile, open }: HeaderProps) {
+  console.log(profile);
   return (
     <div className="header">
       <img src={logo} alt="AIRO Logo" className="header__logo" />
@@ -77,29 +79,66 @@ export default function Header({ handleSettings }: HeaderProps) {
             fill="white"
           />
         </svg>
-        <div className="header__login__profile">
-          <img
-            src={profile}
-            alt="Profile picture"
-            className="header__login__profile__pic"
-          />
-          <span className="header__login__profile__name">Galina</span>
-          <svg
-            onClick={() => handleSettings(true)}
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M8.04469 10.2934C8.12576 10.1147 8.30382 10 8.50001 10H15.5C15.6962 10 15.8743 10.1147 15.9553 10.2934C16.0364 10.472 16.0055 10.6816 15.8763 10.8293L12.3763 14.8293C12.2814 14.9378 12.1442 15 12 15C11.8558 15 11.7187 14.9378 11.6237 14.8293L8.12372 10.8293C7.99453 10.6816 7.96362 10.472 8.04469 10.2934Z"
-              fill="#C4C4C4"
+        {profile.email ? (
+          <div className="header__login__profile">
+            <img
+              src={profile.picture}
+              alt="Profile picture"
+              className="header__login__profile__pic"
             />
-          </svg>
-        </div>
+            <span
+              className="header__login__profile__name"
+              onClick={() => handleSettings(!open)}
+            >
+              {profile.given_name}
+            </span>
+            <svg
+              className={`header__login__profile__name-${
+                open ? "open" : "close"
+              } `}
+              onClick={() => handleSettings(!open)}
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M8.04469 10.2934C8.12576 10.1147 8.30382 10 8.50001 10H15.5C15.6962 10 15.8743 10.1147 15.9553 10.2934C16.0364 10.472 16.0055 10.6816 15.8763 10.8293L12.3763 14.8293C12.2814 14.9378 12.1442 15 12 15C11.8558 15 11.7187 14.9378 11.6237 14.8293L8.12372 10.8293C7.99453 10.6816 7.96362 10.472 8.04469 10.2934Z"
+                fill="#C4C4C4"
+              />
+            </svg>
+          </div>
+        ) : (
+          <div className="header__login__profile">
+            <span
+              className="header__login__profile__name"
+              onClick={() => handleSettings(!open)}
+            >
+              Settings
+            </span>
+            <svg
+              className={`header__login__profile__name-${
+                open ? "open" : "close"
+              } `}
+              onClick={() => handleSettings(!open)}
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M8.04469 10.2934C8.12576 10.1147 8.30382 10 8.50001 10H15.5C15.6962 10 15.8743 10.1147 15.9553 10.2934C16.0364 10.472 16.0055 10.6816 15.8763 10.8293L12.3763 14.8293C12.2814 14.9378 12.1442 15 12 15C11.8558 15 11.7187 14.9378 11.6237 14.8293L8.12372 10.8293C7.99453 10.6816 7.96362 10.472 8.04469 10.2934Z"
+                fill="#C4C4C4"
+              />
+            </svg>
+          </div>
+        )}
       </div>
     </div>
   );
