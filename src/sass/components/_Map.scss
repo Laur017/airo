@@ -43,3 +43,14 @@
 	font-weight: bold;
 	color: black;
 }
+
+.leaflet-popup-tip {
+	display: none;
+}
+
+.leaflet-popup-content-wrapper {
+	margin: 0 !important;
+	background: #3c444c !important;
+	width: 50rem !important;
+	height: 25rem !important;
+}
