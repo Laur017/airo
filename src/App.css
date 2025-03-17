@@ -472,6 +472,15 @@ input:checked + .slider:before {
   color: #ffffff;
 }
 
+.loading-state {
+  position: relative;
+  top: 10rem;
+  left: 20rem;
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
 .onboarding {
   background-color: rgba(0, 0, 0, 0.8);
   position: absolute;

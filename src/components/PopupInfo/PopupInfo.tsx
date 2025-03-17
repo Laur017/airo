@@ -1,17 +1,13 @@
 import { LatLngExpression, LatLng } from 'leaflet';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface PopupInfoProps {
-	position: LatLngExpression | undefined;
-	getAddress: any;
-	data: any;
+	position: LatLngExpression | null;
+	setAirData: any;
 }
 
-export default function PopupInfo({
-	position,
-	getAddress,
-	data,
-}: PopupInfoProps) {
+export default function PopupInfo({ position, setAirData }: PopupInfoProps) {
 	if (!position) {
 		return <p>Location not available</p>;
 	}
@@ -28,30 +24,67 @@ export default function PopupInfo({
 		return <p>Invalid position</p>;
 	}
 
+	const [data, setData] = useState<any>(null);
 	const [address, setAddress] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		const fetchAddress = async () => {
+		if (!position) return;
+
+		const fetchData = async () => {
 			try {
-				const resolvedAddress = await getAddress(position);
-				setAddress(resolvedAddress);
-			} catch (error) {
-				console.error('Error fetching address:', error);
+				const [lat, lng] = Array.isArray(position)
+					? position
+					: [position.lat, position.lng];
+
+				const url = `https://api.waqi.info/feed/geo:${lat};${lng}/?token=${
+					import.meta.env.VITE_API_KEY
+				}`;
+				const response = await axios.get(url);
+				if (response.data.status === 'ok') {
+					setData(response.data.data);
+					setAirData(data);
+				} else {
+					throw new Error('Failed to fetch air quality data');
+				}
+
+				const addressResponse = await axios.get(
+					`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+				);
+				if (addressResponse.data && addressResponse.data.address) {
+					setAddress(addressResponse.data.address);
+				} else {
+					throw new Error('Address not found');
+				}
+			} catch (error: any) {
+				setError(error.message || 'Error fetching data');
+				console.error(error);
+			} finally {
+				setLoading(false);
 			}
 		};
 
-		fetchAddress();
-	}, []);
+		fetchData();
+	}, [position ? JSON.stringify(position) : null]);
+
+	if (loading) {
+		return <p className='loading-state'>Loading...</p>;
+	}
+
+	if (error) {
+		return <p>Error: {error}</p>;
+	}
 
 	return (
 		<div className='info'>
 			<div className='info__top'>
 				<div className='info__top__left'>
-					<span className='info__top__left__val'>{data.iaqi.pm10.v}</span>
+					<span className='info__top__left__val'>{data.iaqi.pm10?.v}</span>
 					<span className='info__top__left__pm'>PM2.5</span>
 				</div>
 				<div className='info__top__right'>
-					<span className='info__top__right__title'>Air Conditioner</span>
+					<span className='info__top__right__title'>Air Quality</span>
 					<div className='info__top__right__address'>
 						<svg
 							width='12'
@@ -75,12 +108,12 @@ export default function PopupInfo({
 			<div className='info__bottom'>
 				<div className='info__bottom__box'>
 					<span className='info__bottom__box__name'>CO2</span>
-					<span className='info__bottom__box__value'>{data.iaqi.p.v}</span>
+					<span className='info__bottom__box__value'>{data.iaqi.no2?.v}</span>
 				</div>
 				<div className='info__bottom__box'>
 					<span className='info__bottom__box__name'>Temp</span>
 					<span className='info__bottom__box__value'>
-						{data.iaqi.t.v}&deg;C
+						{data.iaqi.t?.v}&deg;C
 					</span>
 				</div>
 				<div className='info__bottom__box'>
