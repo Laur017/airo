@@ -1,70 +1,19 @@
-import { LatLngExpression, LatLng } from 'leaflet';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 interface PopupInfoProps {
-	position: LatLngExpression | null;
-	setAirData: any;
-}
-export default function PopupInfo({ position, setAirData }: PopupInfoProps) {
-	const [data, setData] = useState<any>(null);
-	const [address, setAddress] = useState<any>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	if (!position) {
-		return <p>Location not available</p>;
-	}
-	let lat: number;
-	let lng: number;
-	if (Array.isArray(position)) {
-		[lat, lng] = position;
-	} else if (position instanceof LatLng) {
-		lat = position.lat;
-		lng = position.lng;
-	} else {
-		return <p>Invalid position</p>;
-	}
-	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			setError(null);
-			try {
-				const url = `https://api.waqi.info/feed/geo:${lat};${lng}/?token=${
-					import.meta.env.VITE_API_KEY
-				}`;
-				const response = await axios.get(url);
-				if (response.data.status === 'ok') {
-					setData(response.data.data);
-				} else {
-					throw new Error('Failed to fetch air quality data');
-				}
-				const addressResponse = await axios.get(
-					`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
-				);
-				if (addressResponse.data && addressResponse.data.address) {
-					setAddress(addressResponse.data.address);
-				} else {
-					throw new Error('Address not found');
-				}
-			} catch (error: any) {
-				setError(error.message || 'Error fetching data');
-				console.error(error);
-			} finally {
-				setLoading(false);
-			}
+	popupData: {
+		airData: any; // Replace 'any' with a more specific type if available
+		address: {
+			road?: string;
+			[key: string]: any; // Add additional properties if needed
 		};
-		fetchData();
-	}, [lat, lng]);
-	useEffect(() => {
-		if (data) {
-			setAirData(data);
-		}
-	}, [data, setAirData]);
-	if (loading) {
-		return <p className='loading-state'>Loading...</p>;
-	}
-	if (error) {
-		return <p>Error: {error}</p>;
-	}
+	};
+}
+
+export default function PopupInfo({ popupData }: PopupInfoProps) {
+	const data = popupData.airData;
+	const address = popupData.address;
+
+	console.log(data);
+	console.log(address);
 	return (
 		<div className='info'>
 			{' '}
@@ -72,7 +21,9 @@ export default function PopupInfo({ position, setAirData }: PopupInfoProps) {
 				{' '}
 				<div className='info__top__left'>
 					{' '}
-					<span className='info__top__left__val'>{data.iaqi.pm10?.v}</span>{' '}
+					<span className='info__top__left__val'>
+						{data?.iaqi?.pm10?.v}
+					</span>{' '}
 					<span className='info__top__left__pm'>PM2.5</span>{' '}
 				</div>{' '}
 				<div className='info__top__right'>
@@ -106,7 +57,7 @@ export default function PopupInfo({ position, setAirData }: PopupInfoProps) {
 				<div className='info__bottom__box'>
 					{' '}
 					<span className='info__bottom__box__name'>CO2</span>{' '}
-					<span className='info__bottom__box__value'>{data.iaqi.no2?.v}</span>{' '}
+					<span className='info__bottom__box__value'>{data?.iaqi?.no2?.v}</span>{' '}
 				</div>{' '}
 				<div className='info__bottom__box'>
 					{' '}
