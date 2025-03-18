@@ -21,7 +21,7 @@ const Map = () => {
 	const [markers, setMarkers] = useState<[number, number][]>([]);
 	const [locations, setLocations] = useState<string[]>([
 		'Strada Vasile Lupu 99 Iasi',
-		'Strada Han Tatar 3, Iasi',
+		'Strada Sfântul Constantin Iasi',
 	]);
 	const getCoordinatesFromAddress = async (address: string) => {
 		try {
@@ -162,7 +162,7 @@ const Map = () => {
 					</Marker>
 				))}{' '}
 				<CustomButton position={position as LatLngExpression} />{' '}
-				<MapClickHandler onMapClick={handleMapClick} />{' '}
+				{/* <MapClickHandler onMapClick={handleMapClick} />{' '} */}
 			</MapContainer>{' '}
 		</div>
 	);
