@@ -38,6 +38,7 @@ html {
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
+  min-height: 93vh;
 }
 
 .settings {
@@ -516,6 +517,15 @@ input:checked + .slider:before {
   font-size: 1.4rem;
   font-weight: 400;
   color: #ffffff;
+}
+
+.loading-state {
+  position: relative;
+  top: 10rem;
+  left: 20rem;
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 600;
 }
 
 .onboarding {

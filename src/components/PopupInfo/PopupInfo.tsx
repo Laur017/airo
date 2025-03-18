@@ -1,10 +1,13 @@
 import { LatLngExpression, LatLng } from 'leaflet';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface PopupInfoProps {
-	position: LatLngExpression | undefined;
+	position: LatLngExpression | null;
+	setAirData: any;
 }
 
-export default function PopupInfo({ position }: PopupInfoProps) {
+export default function PopupInfo({ position, setAirData }: PopupInfoProps) {
 	if (!position) {
 		return <p>Location not available</p>;
 	}
@@ -21,15 +24,67 @@ export default function PopupInfo({ position }: PopupInfoProps) {
 		return <p>Invalid position</p>;
 	}
 
+	const [data, setData] = useState<any>(null);
+	const [address, setAddress] = useState<any>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (!position) return;
+
+		const fetchData = async () => {
+			try {
+				const [lat, lng] = Array.isArray(position)
+					? position
+					: [position.lat, position.lng];
+
+				const url = `https://api.waqi.info/feed/geo:${lat};${lng}/?token=${
+					import.meta.env.VITE_API_KEY
+				}`;
+				const response = await axios.get(url);
+				if (response.data.status === 'ok') {
+					setData(response.data.data);
+					setAirData(data);
+				} else {
+					throw new Error('Failed to fetch air quality data');
+				}
+
+				const addressResponse = await axios.get(
+					`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+				);
+				if (addressResponse.data && addressResponse.data.address) {
+					setAddress(addressResponse.data.address);
+				} else {
+					throw new Error('Address not found');
+				}
+			} catch (error: any) {
+				setError(error.message || 'Error fetching data');
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, [position ? JSON.stringify(position) : null]);
+
+	if (loading) {
+		return <p className='loading-state'>Loading...</p>;
+	}
+
+	if (error) {
+		return <p>Error: {error}</p>;
+	}
+
 	return (
 		<div className='info'>
 			<div className='info__top'>
 				<div className='info__top__left'>
-					<span className='info__top__left__val'>7.8</span>
+					<span className='info__top__left__val'>{data.iaqi.pm10?.v}</span>
 					<span className='info__top__left__pm'>PM2.5</span>
 				</div>
 				<div className='info__top__right'>
-					<span className='info__top__right__title'>Air Conditioner</span>
+					<span className='info__top__right__title'>Air Quality</span>
 					<div className='info__top__right__address'>
 						<svg
 							width='12'
@@ -39,14 +94,13 @@ export default function PopupInfo({ position }: PopupInfoProps) {
 						>
 							<path
 								fill='#ffffff'
-								fill-rule='evenodd'
-								clip-rule='evenodd'
+								fillRule='evenodd'
+								clipRule='evenodd'
 								d='M18 52C18 52 36 34.8302 36 18.1509C36 8.12645 27.9411 0 18 0C8.05887 0 0 8.12645 0 18.1509C0 34.8302 18 52 18 52ZM18 30C24.6274 30 30 24.6274 30 18C30 11.3726 24.6274 6 18 6C11.3726 6 6 11.3726 6 18C6 24.6274 11.3726 30 18 30Z'
 							/>
 						</svg>
 						<div className='info__top__right__address__name'>
-							Diagon Alley, 12
-							<br /> 1 floor, 2 companies
+							{address?.road} {address?.house_number}
 						</div>
 					</div>
 				</div>
@@ -54,15 +108,17 @@ export default function PopupInfo({ position }: PopupInfoProps) {
 			<div className='info__bottom'>
 				<div className='info__bottom__box'>
 					<span className='info__bottom__box__name'>CO2</span>
-					<span className='info__bottom__box__value'>685.5</span>
+					<span className='info__bottom__box__value'>{data.iaqi.no2?.v}</span>
 				</div>
 				<div className='info__bottom__box'>
 					<span className='info__bottom__box__name'>Temp</span>
-					<span className='info__bottom__box__value'>13&deg;C</span>
+					<span className='info__bottom__box__value'>
+						{data.iaqi.t?.v}&deg;C
+					</span>
 				</div>
 				<div className='info__bottom__box'>
 					<span className='info__bottom__box__name'>Metrics</span>
-					<span className='info__bottom__box__value'>444.2</span>
+					<span className='info__bottom__box__value'>{data.idx}</span>
 				</div>
 			</div>
 		</div>
