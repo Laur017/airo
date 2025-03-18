@@ -1,0 +1,56 @@
+@use "../abstracts/variables" as *;
+
+.success-notification,
+.no-success-notification {
+  position: absolute;
+  bottom: 10rem;
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 0.3rem;
+  gap: 2rem;
+  transform: translateY(5rem);
+  opacity: 0;
+  transition: all 0.3s ease;
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    h3 {
+      font-weight: 700;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
+      letter-spacing: 0.1rem;
+    }
+  }
+
+  & > p {
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.1rem;
+  }
+}
+
+.success-notification {
+  width: 34rem;
+  left: calc(50% - 17rem);
+  background-color: $color-primary-2;
+}
+
+.success-notification-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.no-success-notification {
+  width: 54rem;
+  left: calc(50% - 27rem);
+  background-color: $color-primary-3;
+}
+
+.no-success-notification-active {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -1,16 +1,107 @@
 import { useState } from "react";
 import GatewayForm from "./GatewayForm";
 import DeviceForm from "./DeviceForm";
+import { useParams } from "react-router-dom";
+import { firestore } from "../../firebase";
+import { addDoc, collection } from "firebase/firestore";
+import axios from "axios";
 
 interface AddNewProps {
-  closeForm: (val: boolean) => void;
+  closeForm: (val: boolean, typeMessage: 0 | 1 | 2) => void;
 }
 export default function AddNew({ closeForm }: AddNewProps) {
+  const { id } = useParams();
   const [addType, setAddType] = useState<"gateway" | "device">("gateway");
+  const ref = collection(firestore, id ? id.toString() : "undefined");
+  const [gatewayName, setGatewayName] = useState<string>("");
+  const [gatewayKey, setGatewayKey] = useState<string>("");
+  const [deviceName, setDeviceName] = useState<string>("");
+  const [deviceDescription, setDeviceDescription] = useState<string>("");
+  const [gatewaySelected, setGatewaySelected] = useState<string>("");
+  const [deviceLocation, setDeviceLocation] = useState<string>("");
+
+  const handleForm = async () => {
+    let properData = true;
+    try {
+      let data = {};
+      if (addType === "gateway") {
+        if (gatewayName.length < 1 || gatewayKey.length < 1) {
+          properData = false;
+        }
+        data = {
+          type: addType,
+          gatewayName: gatewayName,
+          gatewayKey: gatewayKey,
+        };
+      } else if (addType === "device") {
+        try {
+          const response = await axios.get(
+            `https://nominatim.openstreetmap.org/search`,
+            {
+              params: {
+                q: deviceLocation,
+                format: "json",
+                addressdetails: 1,
+                limit: 1,
+              },
+            }
+          );
+          if (!response.data.length) {
+            properData = false;
+            closeForm(false, 2);
+          }
+          data = {
+            type: addType,
+            deviceName: deviceName,
+            deviceDescription: deviceDescription,
+            gatewaySelected: gatewaySelected,
+            deviceLocation: deviceLocation,
+          };
+        } catch (error) {
+          properData = false;
+          console.error("Error getting coordinates:", error);
+          return null;
+        }
+      }
+
+      setGatewayName("");
+      setGatewayKey("");
+      setDeviceName("");
+      setDeviceDescription("");
+      setGatewaySelected("");
+      setDeviceLocation("");
+
+      if (properData) {
+        addDoc(ref, data);
+        closeForm(false, 1);
+      } else {
+        closeForm(false, 2);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFormInputs = (inpType: string, val: string) => {
+    if (inpType === "gatewayName") {
+      setGatewayName(val);
+    } else if (inpType === "gatewayKey") {
+      setGatewayKey(val);
+    } else if (inpType === "deviceName") {
+      setDeviceName(val);
+    } else if (inpType === "deviceDescription") {
+      setDeviceDescription(val);
+    } else if (inpType === "gatewaySelected") {
+      setGatewaySelected(val);
+    } else if (inpType === "deviceLocation") {
+      setDeviceLocation(val);
+    }
+  };
+
   return (
     <div className="addNew">
       <div className="addNew-card">
-        <span onClick={() => closeForm(false)}>
+        <span onClick={() => closeForm(false, 0)}>
           <svg
             width="23"
             height="23"
@@ -40,13 +131,26 @@ export default function AddNew({ closeForm }: AddNewProps) {
           </button>
         </div>
 
-        {addType === "gateway" ? <GatewayForm /> : <DeviceForm />}
+        {addType === "gateway" ? (
+          <GatewayForm
+            gatewayName={gatewayName}
+            gatewayKey={gatewayKey}
+            handleFormInputs={handleFormInputs}
+          />
+        ) : (
+          <DeviceForm
+            deviceName={deviceName}
+            deviceDescription={deviceDescription}
+            deviceLocation={deviceLocation}
+            handleFormInputs={handleFormInputs}
+          />
+        )}
 
         <div className="addNew-card__btns">
-          <button className="add-btn">
+          <button className="add-btn" onClick={handleForm}>
             <p>Add {addType}</p>
           </button>
-          <button className="cancel-btn" onClick={() => closeForm(false)}>
+          <button className="cancel-btn" onClick={() => closeForm(false, 0)}>
             <p>Cancel</p>
           </button>
         </div>

@@ -91,9 +91,6 @@ const Map = () => {
         </linearGradient>
     </defs>
 </svg>
-
-
-
 `,
     iconSize: [36, 52],
     iconAnchor: [18, 52],
