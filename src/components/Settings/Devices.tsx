@@ -40,7 +40,7 @@ export default function Devices({
       setDevices(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     getAllDevices();
-  }, []);
+  }, [openedForm]);
 
   useEffect(() => {
     console.log("fetched");
