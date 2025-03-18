@@ -1,5 +1,7 @@
+import { useState } from "react";
 import SettingsImage from "../../assets/settings-img.png";
 import Devices from "./Devices";
+import GatewayInfo from "./GatewayInfo";
 
 interface SettingsParams {
   handleOnboarding: (val: boolean) => void;
@@ -15,6 +17,13 @@ export default function Settings({
   logout,
   profile,
 }: SettingsParams) {
+  const [selectedGateway, setSelectedGateway] = useState<string>("");
+  const [selectedDevices, setSelectedDevices] = useState<any[]>([]);
+
+  const handleSelected = (str: string, arr: any[]) => {
+    setSelectedGateway(str);
+    setSelectedDevices(arr);
+  };
   return (
     <div className="settings">
       {!profile.email ? (
@@ -50,11 +59,18 @@ export default function Settings({
             </a>
           </div>
         </>
-      ) : (
+      ) : !(selectedGateway.length > 1) ? (
         <Devices
           profile={profile}
           signout={logout}
           handleSettings={handleSettings}
+          handleSelected={handleSelected}
+        />
+      ) : (
+        <GatewayInfo
+          name={selectedGateway}
+          handleSelected={handleSelected}
+          selectedDevices={selectedDevices}
         />
       )}
     </div>
