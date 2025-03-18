@@ -46,7 +46,7 @@ export default function AddNew({ closeForm }: AddNewProps) {
               },
             }
           );
-          if (!response.data.length) {
+          if (response.data.length < 1) {
             properData = false;
             closeForm(false, 2);
           }
