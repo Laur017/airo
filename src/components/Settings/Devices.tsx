@@ -28,7 +28,7 @@ export default function Devices({
   const [openedForm, setOpenedForm] = useState<boolean>(false);
   const [typeSuccesMessage, setTypeSuccessMessage] = useState<0 | 1 | 2>(0);
   const [devices, setDevices] = useState<any>([]);
-  const [gateways, setGateways] = useState<any>(null);
+  const [gateways, setGateways] = useState<any>([]);
   const [filteredDevices, setFilteredDevices] = useState<any>(null);
 
   const colRef = collection(firestore, id ? id.toString() : "");
@@ -292,6 +292,6 @@ export default function Devices({
       </div>
     </div>
   ) : (
-    <AddNew closeForm={handleForm} />
+    <AddNew closeForm={handleForm} gateways={gateways} />
   );
 }

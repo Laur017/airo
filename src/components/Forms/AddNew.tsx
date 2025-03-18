@@ -8,8 +8,9 @@ import axios from "axios";
 
 interface AddNewProps {
   closeForm: (val: boolean, typeMessage: 0 | 1 | 2) => void;
+  gateways: any;
 }
-export default function AddNew({ closeForm }: AddNewProps) {
+export default function AddNew({ closeForm, gateways }: AddNewProps) {
   const { id } = useParams();
   const [addType, setAddType] = useState<"gateway" | "device">("gateway");
   const ref = collection(firestore, id ? id.toString() : "undefined");
@@ -143,6 +144,7 @@ export default function AddNew({ closeForm }: AddNewProps) {
             deviceDescription={deviceDescription}
             deviceLocation={deviceLocation}
             handleFormInputs={handleFormInputs}
+            gateways={gateways}
           />
         )}
 

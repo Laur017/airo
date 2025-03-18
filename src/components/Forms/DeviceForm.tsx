@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 interface DeviceFormProps {
@@ -5,6 +6,7 @@ interface DeviceFormProps {
   deviceDescription: string;
   deviceLocation: string;
   handleFormInputs: (typeInput: string, val: string) => void;
+  gateways: any;
 }
 
 export default function DeviceForm({
@@ -12,6 +14,7 @@ export default function DeviceForm({
   deviceDescription,
   deviceLocation,
   handleFormInputs,
+  gateways,
 }: DeviceFormProps) {
   const [dataFormat, setDataFormat] = useState<"json" | "single">("json");
   const [activeDropdown, setActiveDropdown] = useState<boolean[]>([
@@ -134,16 +137,16 @@ export default function DeviceForm({
           </p>
           {activeDropdown[0] && (
             <div className="form-dropdown__options">
-              <p
-                onClick={() => {
-                  setSelectedGateway("Gateway 1");
-                  handleFormInputs("gatewaySelected", "Gateway 1");
-                }}
-              >
-                Gateway 1
-              </p>
-              <p onClick={() => setSelectedGateway("Gateway 2")}>Gateway 2</p>
-              <p onClick={() => setSelectedGateway("Gateway 2")}>Gateway 3</p>
+              {gateways.map((gate: any) => (
+                <p
+                  onClick={() => {
+                    setSelectedGateway(gate.gatewayName);
+                    handleFormInputs("gatewaySelected", gate.gatewayName);
+                  }}
+                >
+                  {gate.gatewayName}
+                </p>
+              ))}
             </div>
           )}
         </div>
@@ -200,7 +203,26 @@ export default function DeviceForm({
             value={deviceLocation}
             onChange={(e) => handleFormInputs("deviceLocation", e.target.value)}
           />
-          <span>
+          <span
+            onClick={async () => {
+              navigator.geolocation.getCurrentPosition(
+                async (position: any) => {
+                  const addressResponse = await axios.get(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json`
+                  );
+                  console.log(addressResponse.data);
+                  handleFormInputs(
+                    "deviceLocation",
+                    addressResponse.data.address.road +
+                      " " +
+                      addressResponse.data.address.house_number +
+                      ", " +
+                      addressResponse.data.address.county
+                  );
+                }
+              );
+            }}
+          >
             <svg
               width="44"
               height="40"
