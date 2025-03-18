@@ -1,6 +1,18 @@
 import { useState } from "react";
 
-export default function DeviceForm() {
+interface DeviceFormProps {
+  deviceName: string;
+  deviceDescription: string;
+  deviceLocation: string;
+  handleFormInputs: (typeInput: string, val: string) => void;
+}
+
+export default function DeviceForm({
+  deviceName,
+  deviceDescription,
+  deviceLocation,
+  handleFormInputs,
+}: DeviceFormProps) {
   const [dataFormat, setDataFormat] = useState<"json" | "single">("json");
   const [activeDropdown, setActiveDropdown] = useState<boolean[]>([
     false,
@@ -12,7 +24,13 @@ export default function DeviceForm() {
     <div className="device-form">
       <label htmlFor="deviceName">
         <p>Device's name</p>
-        <input type="text" id="deviceName" placeholder="Type name..." />
+        <input
+          type="text"
+          id="deviceName"
+          placeholder="Type name..."
+          value={deviceName}
+          onChange={(e) => handleFormInputs("deviceName", e.target.value)}
+        />
       </label>
       <label htmlFor="deviceDataFormat">
         <p>Data format</p>
@@ -37,6 +55,10 @@ export default function DeviceForm() {
           type="text"
           id="deviceDescription"
           placeholder="Type description..."
+          value={deviceDescription}
+          onChange={(e) =>
+            handleFormInputs("deviceDescription", e.target.value)
+          }
         />
       </label>
       {dataFormat === "json" ? (
@@ -112,7 +134,14 @@ export default function DeviceForm() {
           </p>
           {activeDropdown[0] && (
             <div className="form-dropdown__options">
-              <p onClick={() => setSelectedGateway("Gateway 1")}>Gateway 1</p>
+              <p
+                onClick={() => {
+                  setSelectedGateway("Gateway 1");
+                  handleFormInputs("gatewaySelected", "Gateway 1");
+                }}
+              >
+                Gateway 1
+              </p>
               <p onClick={() => setSelectedGateway("Gateway 2")}>Gateway 2</p>
               <p onClick={() => setSelectedGateway("Gateway 2")}>Gateway 3</p>
             </div>
@@ -168,6 +197,8 @@ export default function DeviceForm() {
             type="text"
             id="deviceLocation"
             placeholder="Type location..."
+            value={deviceLocation}
+            onChange={(e) => handleFormInputs("deviceLocation", e.target.value)}
           />
           <span>
             <svg

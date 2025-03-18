@@ -7,12 +7,15 @@ import Settings from "./components/Settings/Settings";
 import Onboarding from "./components/Settings/Onboarding";
 import Footer from "./components/Footer/Footer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [user, setUser] = useState<any>([]);
   const [profile, setProfile] = useState<any[] | null>([]);
+
+  const navigate = useNavigate();
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
@@ -21,6 +24,16 @@ function App() {
     },
     onError: (error) => console.log("Login Failed:", error),
   });
+
+  useEffect(() => {
+    const data = window.localStorage.getItem("MY_PROFILE");
+    if (data !== null) setProfile(JSON.parse(data));
+  }, []);
+
+  useEffect(() => {
+    console.log("action");
+    window.localStorage.setItem("MY_PROFILE", JSON.stringify(profile));
+  }, [profile]);
 
   useEffect(() => {
     if (user) {
@@ -36,14 +49,18 @@ function App() {
         )
         .then((res) => {
           setProfile(res.data);
+          navigate(`/${res.data.id}`);
         })
         .catch((err) => console.log(err));
     }
   }, [user]);
 
   const logOut = () => {
+    window.localStorage.removeItem("MY_PROFILE");
     googleLogout();
     setProfile(null);
+    navigate("/");
+    window.location.reload();
   };
   const handleOnboarding = (bool: boolean) => {
     setShowOnboarding(bool);

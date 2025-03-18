@@ -16,6 +16,7 @@ import CustomButton from './CustomButton';
 import axios from 'axios';
 
 const Map = () => {
+
 	const [position, setPosition] = useState<[number, number] | null>(null);
 	const [airData, setAirData] = useState<any>(null); // Use any or specific type for airData
 	const [markers, setMarkers] = useState<[number, number][]>([]);
