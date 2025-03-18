@@ -1,12 +1,4 @@
-import {
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import AddNew from "../Forms/AddNew";
 
 import { firestore } from "../../firebase";
@@ -17,12 +9,14 @@ interface DevicesProps {
   profile: any;
   signout: any;
   handleSettings: (val: boolean) => void;
+  handleSelected: (val: string, arr: any[]) => void;
 }
 
 export default function Devices({
   profile,
   signout,
   handleSettings,
+  handleSelected,
 }: DevicesProps) {
   const { id } = useParams();
   const [openedForm, setOpenedForm] = useState<boolean>(false);
@@ -34,7 +28,6 @@ export default function Devices({
   const colRef = collection(firestore, id ? id.toString() : "");
 
   useEffect(() => {
-    console.log("fetchigdevices");
     const getAllDevices = async () => {
       const data = await getDocs(colRef);
       setDevices(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -81,7 +74,18 @@ export default function Devices({
   };
 
   const AllDevices = devices.map((element: any) => (
-    <div className="device-card" key={element.id}>
+    <div
+      className="device-card"
+      key={element.id}
+      onClick={() => {
+        handleSelected(
+          element.gatewayName,
+          filteredDevices.filter(
+            (el: any) => el.gatewaySelected === element.gatewayName
+          )
+        );
+      }}
+    >
       <div className="device-card__left">
         <span>
           {element.type === "gateway" ? (
