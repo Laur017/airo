@@ -1,6 +1,3 @@
-import { Popup } from "react-leaflet";
-import PopupInfo from "../PopupInfo/PopupInfo";
-
 interface GatewayFormProps {
   name: string;
   handleSelected: (val: string, arr: any[]) => void;
@@ -14,9 +11,7 @@ export default function GatewayInfo({
 }: GatewayFormProps) {
   console.log(selectedDevices);
 
-  const Devices = selectedDevices.map((el: any) => (
-    <PopupInfo position={el.deviceLocation} setAirData={"setAirData"} />
-  ));
+  const Devices = selectedDevices.map((el: any) => <h2>{el.deviceName}</h2>);
   return (
     <div className="gateway-info">
       <div className="gateway-info__top">
