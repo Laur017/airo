@@ -153,8 +153,7 @@ const Map = ({ locations }: MapProps) => {
 	});
 
 	const generateIconSvg = (pmValue: number) => {
-		console.log('PM Value:', pmValue); // Debugging log
-		if (pmValue > 8) {
+		if (pmValue > 10) {
 			return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="8" cy="8" r="4" stroke="url(#paint0_linear_1_14989)" stroke-width="4"/>
 <defs>
@@ -165,7 +164,7 @@ const Map = ({ locations }: MapProps) => {
 </defs>
 </svg>
 `;
-		} else if (pmValue < 8 && pmValue > 5) {
+		} else if (pmValue < 10 && pmValue > 5) {
 			return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="8" cy="8" r="4" stroke="url(#paint0_linear_1_14994)" stroke-width="4"/>
 <defs>
