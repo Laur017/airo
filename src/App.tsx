@@ -87,7 +87,6 @@ function App() {
 				.map((doc) => ({ ...doc.data(), id: doc.id }))
 				.filter((el: any) => el.type === 'device');
 			setLocations(allData.map((el: any) => el.deviceLocation));
-			console.log(allData);
 		};
 		getAllDevices();
 	}, [updateMap]);
