@@ -152,10 +152,10 @@ const Map = ({ locations }: MapProps) => {
     popupAnchor: [0, -52],
   });
 
-  const generateIconSvg = (pmValue: number) => {
-    console.log("PM Value:", pmValue); // Debugging log
-    if (pmValue > 8) {
-      return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+const generateIconSvg = (pmValue: number) => {
+		if (pmValue > 10) {
+			return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="8" cy="8" r="4" stroke="url(#paint0_linear_1_14989)" stroke-width="4"/>
 <defs>
 <linearGradient id="paint0_linear_1_14989" x1="8" y1="2" x2="8" y2="14" gradientUnits="userSpaceOnUse">
@@ -165,8 +165,8 @@ const Map = ({ locations }: MapProps) => {
 </defs>
 </svg>
 `;
-    } else if (pmValue < 8 && pmValue > 5) {
-      return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+		} else if (pmValue < 10 && pmValue > 5) {
+			return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="8" cy="8" r="4" stroke="url(#paint0_linear_1_14994)" stroke-width="4"/>
 <defs>
 <linearGradient id="paint0_linear_1_14994" x1="8" y1="2" x2="8" y2="14" gradientUnits="userSpaceOnUse">
@@ -176,8 +176,8 @@ const Map = ({ locations }: MapProps) => {
 </defs>
 </svg>
 `;
-    } else {
-      return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+		} else {
+			return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="8" cy="8" r="4" stroke="url(#paint0_linear_1_14997)" stroke-width="4"/>
 <defs>
 <linearGradient id="paint0_linear_1_14997" x1="8" y1="2" x2="8" y2="14" gradientUnits="userSpaceOnUse">
@@ -187,8 +187,8 @@ const Map = ({ locations }: MapProps) => {
 </defs>
 </svg>
 `;
-    }
-  };
+		}
+	};
 
   // If no position yet, return loading spinner
   if (!position) {
