@@ -16,7 +16,7 @@ function App() {
 	const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 	const [showSettings, setShowSettings] = useState<boolean>(false);
 	const [user, setUser] = useState<any>([]);
-	const [profile, setProfile] = useState<any[] | null>([]);
+	const [profile, setProfile] = useState<any[]>([]);
 	const [updateMap, setUpdateMap] = useState<number>(0);
 
 	const navigate = useNavigate();
@@ -62,7 +62,7 @@ function App() {
 	const logOut = () => {
 		window.localStorage.removeItem('MY_PROFILE');
 		googleLogout();
-		setProfile(null);
+		setProfile([]);
 		navigate('/');
 		window.location.reload();
 	};
@@ -77,19 +77,29 @@ function App() {
 
 	const { id } = useParams();
 	const [locations, setLocations] = useState<string[]>([]);
-	const colRef = collection(firestore, id ? id.toString() : '');
+	let colRef: any;
 
-	useEffect(() => {
-		console.log('fetchigdevices');
-		const getAllDevices = async () => {
-			const data = await getDocs(colRef);
-			const allData = data.docs
-				.map((doc) => ({ ...doc.data(), id: doc.id }))
-				.filter((el: any) => el.type === 'device');
-			setLocations(allData.map((el: any) => el.deviceLocation));
-		};
-		getAllDevices();
-	}, [updateMap]);
+	if (profile.length > 1) {
+		colRef = collection(firestore, id ? id.toString() : '');
+
+		useEffect(() => {
+			console.log('fetchigdevices');
+			const getAllDevices = async () => {
+				const data = await getDocs(colRef);
+				const allData = data.docs
+					.map((doc) => {
+						const docData = doc.data();
+						return docData && typeof docData === 'object'
+							? { ...docData, id: doc.id }
+							: null;
+					})
+					.filter((el: any) => el.type === 'device');
+				setLocations(allData.map((el: any) => el.deviceLocation));
+				console.log(allData);
+			};
+			getAllDevices();
+		}, [updateMap]);
+	}
 
 	return (
 		<div className='app'>
