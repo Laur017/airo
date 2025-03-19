@@ -77,14 +77,13 @@ function App() {
 
 	const { id } = useParams();
 	const [locations, setLocations] = useState<string[]>([]);
-	let colRef: any;
 
-	if (profile.length > 1) {
-		colRef = collection(firestore, id ? id.toString() : '');
+	useEffect(() => {
+		if (!id) return; // Exit early if id is null or undefined
 
-		useEffect(() => {
-			console.log('fetchigdevices');
-			const getAllDevices = async () => {
+		const colRef = collection(firestore, id.toString());
+		const getAllDevices = async () => {
+			try {
 				const data = await getDocs(colRef);
 				const allData = data.docs
 					.map((doc) => {
@@ -96,10 +95,12 @@ function App() {
 					.filter((el: any) => el.type === 'device');
 				setLocations(allData.map((el: any) => el.deviceLocation));
 				console.log(allData);
-			};
-			getAllDevices();
-		}, [updateMap]);
-	}
+			} catch (error) {
+				console.error('Error fetching devices:', error);
+			}
+		};
+		getAllDevices();
+	}, [id, updateMap]);
 
 	return (
 		<div className='app'>
