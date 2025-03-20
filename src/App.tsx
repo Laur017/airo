@@ -77,10 +77,9 @@ function App() {
 
   const { id } = useParams();
   const [locations, setLocations] = useState<string[]>([]);
-  let colRef: any;
 
   if (profile.length > 1) {
-    colRef = collection(firestore, id ? id.toString() : "");
+    const colRef = collection(firestore, id ? id.toString() : "");
 
     useEffect(() => {
       console.log("fetchigdevices");
