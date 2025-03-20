@@ -20,8 +20,10 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
   const [deviceDescription, setDeviceDescription] = useState<string>("");
   const [gatewaySelected, setGatewaySelected] = useState<string>("");
   const [deviceLocation, setDeviceLocation] = useState<string>("");
+  const [deviceAirQuality, setDeviceAirQuality] = useState<any[]>([]);
 
   const handleForm = async () => {
+    console.log("clicked add form");
     let properData = true;
     try {
       let data = {};
@@ -37,7 +39,7 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
       } else if (addType === "device") {
         try {
           const response = await axios.get(
-            `https://nominatim.openstreetmap.org/search`,
+            `https://nominatim.openstreetmap.org/search?`,
             {
               params: {
                 q: deviceLocation,
@@ -51,12 +53,49 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
             properData = false;
             closeForm(false, 2);
           }
+          const res = await axios.get(
+            `https://nominatim.openstreetmap.org/search`,
+            {
+              params: {
+                q: deviceLocation,
+                format: "json",
+                addressdetails: 1,
+                limit: 1,
+              },
+            }
+          );
+
+          let lat;
+          let lon;
+          let url: string;
+
+          if (response.data.length > 0) {
+            console.log("aici ar trebui sa am latitudinea si longitudinea");
+            lat = res.data[0].lat;
+            lon = res.data[0].lon;
+            url = `https://api.waqi.info/feed/geo:${lat};${lon}/?token=${
+              import.meta.env.VITE_API_KEY
+            }`;
+            if (lat && lon) {
+              const resp = await axios.get(url);
+              console.log(resp.data.status);
+
+              if (resp.data.status === "ok") {
+                console.log("resp data data");
+                console.log(resp.data.data);
+              }
+            }
+          }
+
           data = {
             type: addType,
             deviceName: deviceName,
             deviceDescription: deviceDescription,
             gatewaySelected: gatewaySelected,
             deviceLocation: deviceLocation,
+            // co2: //,
+            // pm: //,
+            // temp: //,
           };
         } catch (error) {
           properData = false;
