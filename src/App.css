@@ -686,6 +686,54 @@ input:checked + .slider:before {
   justify-content: flex-start;
   gap: 3rem;
 }
+.gateway-device-card__top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.gateway-device-card__top-right p {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+  color: rgba(255, 255, 255, 0.6);
+  gap: 1rem;
+}
+.gateway-device-card__top-right p svg {
+  width: 1.2rem;
+}
+.gateway-device-card__bottom {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 1.5rem;
+}
+.gateway-device-card__bottom .metrics-card {
+  border: 0.15rem solid #acf254;
+  width: 9.8rem;
+  border-radius: 0.4rem;
+  padding: 1rem;
+  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.1019607843);
+  background-color: #30363d;
+}
+.gateway-device-card__bottom .metrics-card h4 {
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 100%;
+  letter-spacing: 0.1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.gateway-device-card__bottom .metrics-card p {
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+}
 
 .main-btn {
   all: unset;
