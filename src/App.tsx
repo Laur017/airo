@@ -77,9 +77,10 @@ function App() {
 
 	const { id } = useParams();
 	const [locations, setLocations] = useState<string[]>([]);
+	const [data, setData] = useState<any>('');
 
 	useEffect(() => {
-		if (!id) return; // Exit early if id is null or undefined
+		if (!id) return;
 
 		const colRef = collection(firestore, id.toString());
 		const getAllDevices = async () => {
@@ -94,7 +95,7 @@ function App() {
 					})
 					.filter((el: any) => el.type === 'device');
 				setLocations(allData.map((el: any) => el.deviceLocation));
-				console.log(allData);
+				setData(allData);
 			} catch (error) {
 				console.error('Error fetching devices:', error);
 			}
@@ -108,9 +109,13 @@ function App() {
 				handleSettings={handleSettings}
 				profile={profile}
 				open={showSettings}
+				data={data}
 			/>
 			<div className='main'>
-				<Map locations={locations} />
+				<Map
+					locations={locations}
+					data={data}
+				/>
 				{showSettings && (
 					<Settings
 						handleOnboarding={handleOnboarding}

@@ -16,12 +16,13 @@ import axios from 'axios';
 
 interface MapProps {
 	locations: string[];
+	data: any;
 }
 
-const Map = ({ locations }: MapProps) => {
+const Map = ({ locations, data }: MapProps) => {
 	const [position, setPosition] = useState<[number, number] | null>(null);
 	const [markers, setMarkers] = useState<
-		{ coords: [number, number]; airData: any; address: any }[]
+		{ coords: [number, number]; airData: any; address: any; deviceName: any }[]
 	>([]);
 	const [activeMarkerIndex, setActiveMarkerIndex] = useState<number | null>(
 		null
@@ -92,57 +93,64 @@ const Map = ({ locations }: MapProps) => {
 	};
 
 	useEffect(() => {
-		// Fetch data for all locations and generate markers
 		const fetchMarkers = async () => {
 			const markerData: any[] = [];
+
 			for (const location of locations) {
 				const coords = await fetchCoordinatesFromAddress(location);
+
 				if (coords) {
 					const [lat, lon] = coords;
 
-					// Fetch air quality and address data for each location
 					const airData = await fetchAirQualityData(lat, lon);
 					const address = await fetchAddressFromCoordinates(lat, lon);
 
-					markerData.push({ coords: [lat, lon], airData, address });
+					const matchingDevice = data.find(
+						(device: any) => device.deviceLocation === location
+					);
+
+					markerData.push({
+						coords: [lat, lon],
+						airData,
+						address,
+						deviceName: matchingDevice ? matchingDevice.deviceName : null,
+					});
 				}
 			}
+
 			setMarkers(markerData);
 		};
 
 		if (locations.length > 0) {
 			fetchMarkers();
 		}
-	}, [locations]);
+	}, [locations, data]);
 
-	const [defaultVal, setDefaultVal] = useState<any>(null); // State for air quality data
-	const [defaultAddress, setDefaultAddress] = useState<any>(null); // State for address
-	const [error, setError] = useState<string | null>(null); // State for error handling
+	const [defaultVal, setDefaultVal] = useState<any>(null);
+	const [defaultAddress, setDefaultAddress] = useState<any>(null);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		// Define the async logic within the useEffect
 		const loadDefaultData = async (position: [number, number] | null) => {
 			try {
-				if (!position) return; // Exit if position is null
-				const defaultVal = await fetchAirQualityData(position[0], position[1]); // Fetch air quality data
+				if (!position) return;
+				const defaultVal = await fetchAirQualityData(position[0], position[1]);
 				const defaultAddress = await fetchAddressFromCoordinates(
 					position[0],
 					position[1]
-				); // Fetch address data
+				);
 
-				// Update states with fetched data
 				setDefaultVal(defaultVal);
 				setDefaultAddress(defaultAddress);
 			} catch (error) {
 				console.error('Error fetching default data:', error);
-				setError('Failed to load data'); // Update error state if fetching fails
+				setError('Failed to load data');
 			}
 		};
 
-		loadDefaultData(position); // Call the function and pass the position
+		loadDefaultData(position);
 	}, [position]);
 
-	// Default icon for markers
 	const defaultIcon = L.divIcon({
 		className: 'custom-marker',
 		html: `<svg width="36" height="52" viewBox="0 0 36 52" xmlns="http://www.w3.org/2000/svg"> 
@@ -205,7 +213,6 @@ const Map = ({ locations }: MapProps) => {
 		}
 	};
 
-	// If no position yet, return loading spinner
 	if (!position || !markers || !defaultAddress || !defaultVal) {
 		return <Spinner />;
 	}
@@ -231,12 +238,14 @@ const Map = ({ locations }: MapProps) => {
 								airData: defaultVal,
 								address: defaultAddress,
 							}}
+							name='Your location'
 						/>
 					</Popup>
 				</Marker>
 
 				{markers.map((marker, index) => {
 					const pmValue = marker.airData?.aqi;
+
 					if (pmValue) {
 						return (
 							<Marker
@@ -244,14 +253,14 @@ const Map = ({ locations }: MapProps) => {
 								position={marker.coords}
 								icon={L.divIcon({
 									className: `popup-marker-${index}`,
-									html: generateIconSvg(pmValue, activeMarkerIndex === index), // Check if this marker is active
+									html: generateIconSvg(pmValue, activeMarkerIndex === index),
 									iconSize: [16, 16],
 									iconAnchor: [16, 16],
 									popupAnchor: [0, -16],
 								})}
 								eventHandlers={{
-									click: () => setActiveMarkerIndex(index), // Set the active marker index on click
-									popupclose: () => setActiveMarkerIndex(null), // Reset when popup is closed
+									click: () => setActiveMarkerIndex(index),
+									popupclose: () => setActiveMarkerIndex(null),
 								}}
 							>
 								<Popup>
@@ -260,6 +269,7 @@ const Map = ({ locations }: MapProps) => {
 											airData: marker.airData,
 											address: marker.address,
 										}}
+										name={marker.deviceName || 'Unknown Device'}
 									/>
 								</Popup>
 							</Marker>
