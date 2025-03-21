@@ -1,17 +1,17 @@
 import axios from "axios";
 
 interface GatewayFormProps {
-  name: string;
-  handleSelected: (val: string, arr: any[]) => void;
-  selectedDevices: any[];
+	name: string;
+	handleSelected: (val: string, arr: any[]) => void;
+	selectedDevices: any[];
 }
 
 export default function GatewayInfo({
-  name,
-  handleSelected,
-  selectedDevices,
+	name,
+	handleSelected,
+	selectedDevices,
 }: GatewayFormProps) {
-  console.log(selectedDevices);
+	console.log(selectedDevices);
 
   const Devices = selectedDevices.map((el: any) => {
     return (
@@ -164,4 +164,5 @@ export default function GatewayInfo({
       <div className="gateway-info__bottom"></div>
     </div>
   );
+
 }

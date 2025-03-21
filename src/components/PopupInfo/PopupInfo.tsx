@@ -2,15 +2,16 @@ import ProgressBar from './ProgressBar';
 
 interface PopupInfoProps {
 	popupData: {
-		airData: any; // Replace 'any' with a more specific type if available
+		airData: any;
 		address: {
 			road?: string;
-			[key: string]: any; // Add additional properties if needed
+			[key: string]: any;
 		};
 	};
+	name: string;
 }
 
-export default function PopupInfo({ popupData }: PopupInfoProps) {
+export default function PopupInfo({ popupData, name }: PopupInfoProps) {
 	const data = popupData.airData;
 	const address = popupData.address;
 	return (
@@ -28,7 +29,7 @@ export default function PopupInfo({ popupData }: PopupInfoProps) {
 					/>
 				</div>
 				<div className='info__top__right'>
-					<span className='info__top__right__title'>Air Quality</span>
+					<span className='info__top__right__title'>{name}</span>
 					<div className='info__top__right__address'>
 						<svg
 							width='12'

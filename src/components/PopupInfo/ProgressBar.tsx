@@ -24,7 +24,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
 	let setValue = value;
 
-	// Ensure value does not exceed the max value
 	if (value > 10) {
 		setValue = 10;
 	}
@@ -45,7 +44,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 					xmlns='http://www.w3.org/2000/svg'
 					className='progress-bar'
 				>
-					{/* Define Linear Gradient */}
 					<defs>
 						<linearGradient
 							id='progress-gradient'
@@ -65,7 +63,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 						</linearGradient>
 					</defs>
 
-					{/* Background Circle (Static) */}
 					<circle
 						cx='41'
 						cy='41'
@@ -75,12 +72,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 						fill='none'
 					/>
 
-					{/* Progress Circle (Dynamic) with Linear Gradient */}
 					<circle
 						cx='41'
 						cy='41'
 						r={radius}
-						stroke='url(#progress-gradient)' // Apply gradient here
+						stroke='url(#progress-gradient)'
 						strokeWidth={strokeWidth}
 						fill='none'
 						strokeDasharray={circumference}
