@@ -4,7 +4,6 @@ import AddNew from "../Forms/AddNew";
 import { firestore } from "../../firebase";
 import { getDocs, collection } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 
 interface DevicesProps {
   profile: any;
@@ -37,7 +36,6 @@ export default function Devices({
   }, [openedForm]);
 
   useEffect(() => {
-    console.log("fetched");
     const filteredGateways = devices.filter(
       (el: {
         gatewayKey: string;
@@ -78,12 +76,18 @@ export default function Devices({
     const selectedDevicesForGateway = filteredDevices.filter(
       (el: any) => el.gatewaySelected === element.gatewayName
     );
+    console.log(element);
     return (
       <div
         className="device-card"
         key={element.id}
         onClick={() => {
-          handleSelected(element.gatewayName, selectedDevicesForGateway);
+          handleSelected(
+            element.type === "gateway"
+              ? element.gatewayName
+              : element.deviceName + "_devName",
+            element.type === "gateway" ? selectedDevicesForGateway : [element]
+          );
         }}
       >
         <div className="device-card__left">
