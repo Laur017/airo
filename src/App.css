@@ -640,6 +640,53 @@ input:checked + .slider:before {
   margin-top: 3rem;
 }
 
+.gateway-info {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5rem;
+}
+.gateway-info__top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.gateway-info__top h1 {
+  font-family: "Fira Sans", sans-serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 2.4rem;
+  letter-spacing: 0.1rem;
+}
+.gateway-info__top span {
+  cursor: pointer;
+}
+.gateway-info__content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.gateway-device-card {
+  width: 90%;
+  background-color: #3c444c;
+  border-radius: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 2rem;
+}
+.gateway-device-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3rem;
+}
+
 .main-btn {
   all: unset;
   background-color: #6202ee;
