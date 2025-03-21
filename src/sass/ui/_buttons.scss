@@ -101,3 +101,38 @@
     color: $color-white;
   }
 }
+
+.chart-btn {
+  width: 11rem;
+  height: 3.2rem;
+  border: none;
+  background-color: $color-grey-5;
+  color: rgba($color-white, 0.6);
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  p {
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.15rem;
+  }
+}
+
+.chart-btn-active {
+  width: 11rem;
+  height: 3.2rem;
+  border: none;
+  background-color: $color-primary;
+  color: $color-white;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  p {
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    letter-spacing: 0.15rem;
+  }
+}
