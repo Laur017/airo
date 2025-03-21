@@ -75,59 +75,55 @@ function App() {
     console.log(bool ? "showing" : "hidding");
   };
 
-	const { id } = useParams();
-	const [locations, setLocations] = useState<string[]>([]);
-	const [data, setData] = useState<any>('');
+  const { id } = useParams();
+  const [locations, setLocations] = useState<string[]>([]);
+  const [data, setData] = useState<any>("");
 
-	useEffect(() => {
-		if (!id) return;
+  useEffect(() => {
+    if (!id) return;
 
-		const colRef = collection(firestore, id.toString());
-		const getAllDevices = async () => {
-			try {
-				const data = await getDocs(colRef);
-				const allData = data.docs
-					.map((doc) => {
-						const docData = doc.data();
-						return docData && typeof docData === 'object'
-							? { ...docData, id: doc.id }
-							: null;
-					})
-					.filter((el: any) => el.type === 'device');
-				setLocations(allData.map((el: any) => el.deviceLocation));
-				setData(allData);
-			} catch (error) {
-				console.error('Error fetching devices:', error);
-			}
-		};
-		getAllDevices();
-	}, [id, updateMap]);
+    const colRef = collection(firestore, id.toString());
+    const getAllDevices = async () => {
+      try {
+        const data = await getDocs(colRef);
+        const allData = data.docs
+          .map((doc) => {
+            const docData = doc.data();
+            return docData && typeof docData === "object"
+              ? { ...docData, id: doc.id }
+              : null;
+          })
+          .filter((el: any) => el.type === "device");
+        setLocations(allData.map((el: any) => el.deviceLocation));
+        setData(allData);
+      } catch (error) {
+        console.error("Error fetching devices:", error);
+      }
+    };
+    getAllDevices();
+  }, [id, updateMap]);
 
-	return (
-		<div className='app'>
-			<Header
-				handleSettings={handleSettings}
-				profile={profile}
-				open={showSettings}
-				data={data}
-			/>
-			<div className='main'>
-				<Map
-					locations={locations}
-					data={data}
-				/>
-				{showSettings && (
-					<Settings
-						handleOnboarding={handleOnboarding}
-						handleSettings={handleSettings}
-						login={login}
-						logout={logOut}
-						profile={profile}
-					/>
-				)}
-				<Footer />
-			</div>
-
+  return (
+    <div className="app">
+      <Header
+        handleSettings={handleSettings}
+        profile={profile}
+        open={showSettings}
+        data={data}
+      />
+      <div className="main">
+        <Map locations={locations} data={data} />
+        {showSettings && (
+          <Settings
+            handleOnboarding={handleOnboarding}
+            handleSettings={handleSettings}
+            login={login}
+            logout={logOut}
+            profile={profile}
+          />
+        )}
+        <Footer />
+      </div>
 
       {showOnboarding && <Onboarding handleOnboarding={handleOnboarding} />}
     </div>

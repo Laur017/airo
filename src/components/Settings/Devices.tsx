@@ -25,42 +25,8 @@ export default function Devices({
   const [devices, setDevices] = useState<any>([]);
   const [gateways, setGateways] = useState<any>([]);
   const [filteredDevices, setFilteredDevices] = useState<any>([]);
-  const [airData, setAirData] = useState<any>([]);
 
   const colRef = collection(firestore, id ? id.toString() : "");
-
-  const fetchCoordinatesFromAddress = async (address: string) => {
-    try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search`,
-        {
-          params: { q: address, format: "json", addressdetails: 1, limit: 1 },
-        }
-      );
-      if (response.data.length > 0) {
-        const { lat, lon } = response.data[0];
-        return [parseFloat(lat), parseFloat(lon)];
-      }
-    } catch (error) {
-      console.error("Error fetching coordinates:", error);
-    }
-    return null;
-  };
-
-  const fetchAirQualityData = async (lat: number, lon: number) => {
-    try {
-      const url = `https://api.waqi.info/feed/geo:${lat};${lon}/?token=${
-        import.meta.env.VITE_API_KEY
-      }`;
-      const response = await axios.get(url);
-      if (response.data.status === "ok") {
-        return response.data.data;
-      }
-    } catch (error) {
-      console.error("Error fetching air quality data:", error);
-    }
-    return null;
-  };
 
   useEffect(() => {
     const getAllDevices = async () => {
@@ -96,25 +62,6 @@ export default function Devices({
     setFilteredDevices(almostFilteredDevices);
   }, [devices]);
 
-  useEffect(() => {
-    //TODO treci prin toate device urile seteaza airData si dupa trimite
-    // ca props spre GatewayInfo ca sa le ia de acolo
-    const dataAir: any[] = [];
-    const getAirData = async () => {
-      for (let el of filteredDevices) {
-        const coords = await fetchCoordinatesFromAddress(el.deviceLocation);
-        if (coords) {
-          const [lat, lon] = coords;
-          const airDetails = await fetchAirQualityData(lat, lon);
-          dataAir.push(airDetails);
-        }
-      }
-      console.log("data airrrrr ", dataAir);
-      setAirData(dataAir);
-    };
-    getAirData();
-  }, [filteredDevices]);
-
   const handleForm = (bool: boolean, typeClose: 0 | 1 | 2) => {
     setOpenedForm(bool);
     bool ? handleSettings(false) : handleSettings(true);
@@ -128,26 +75,15 @@ export default function Devices({
   };
 
   const AllDevices = devices.map((element: any) => {
-    console.log(airData);
-    const selectedAirDataForGateway = airData.filter(
-      (el: any) =>
-        el.city.geo[0] === element.deviceCoords[0] &&
-        el.city.geo[1] === element.deviceCoords[1]
-    );
     const selectedDevicesForGateway = filteredDevices.filter(
       (el: any) => el.gatewaySelected === element.gatewayName
     );
-    console.log(" - - ", selectedDevicesForGateway, selectedAirDataForGateway);
     return (
       <div
         className="device-card"
         key={element.id}
         onClick={() => {
-          handleSelected(
-            element.gatewayName,
-            // TODO adding the air data to the filtered devices
-            selectedDevicesForGateway
-          );
+          handleSelected(element.gatewayName, selectedDevicesForGateway);
         }}
       >
         <div className="device-card__left">

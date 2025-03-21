@@ -13,94 +13,149 @@ export default function GatewayInfo({
   handleSelected,
   selectedDevices,
 }: GatewayFormProps) {
+  const [airData, setAirData] = useState<any>([]);
+  const fetchCoordinatesFromAddress = async (address: string) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search`,
+        {
+          params: { q: address, format: "json", addressdetails: 1, limit: 1 },
+        }
+      );
+      if (response.data.length > 0) {
+        const { lat, lon } = response.data[0];
+        return [parseFloat(lat), parseFloat(lon)];
+      }
+    } catch (error) {
+      console.error("Error fetching coordinates:", error);
+    }
+    return null;
+  };
+
+  const fetchAirQualityData = async (lat: number, lon: number) => {
+    try {
+      const url = `https://api.waqi.info/feed/geo:${lat};${lon}/?token=${
+        import.meta.env.VITE_API_KEY
+      }`;
+      const response = await axios.get(url);
+      if (response.data.status === "ok") {
+        return response.data.data;
+      }
+    } catch (error) {
+      console.error("Error fetching air quality data:", error);
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const getAirData = async () => {
+      const dataAir: any = {};
+
+      for (const el of selectedDevices) {
+        const coords = await fetchCoordinatesFromAddress(el.deviceLocation);
+        if (coords) {
+          const [lat, lon] = coords;
+          const airDetails = await fetchAirQualityData(lat, lon);
+          if (airDetails) {
+            dataAir[el.deviceName] = airDetails;
+          }
+        }
+      }
+
+      setAirData(dataAir);
+    };
+
+    getAirData();
+  }, [selectedDevices]);
+
   const Devices = selectedDevices.map((el: any) => {
-    useEffect(() => {}, []);
-
-    console.log(selectedDevices);
-
-    // console.log(airData);
-    return (
-      // <div className="gateway-device-card">
-      //   <div className="gateway-device-card__top">
-      //     <ProgressBar
-      //       value={airData?.aqi}
-      //       maxRange={10}
-      //       title={"PM2.5"}
-      //       height={75}
-      //       width={75}
-      //       colorStart={"#ACF254"}
-      //       colorEnd={"#20944E"}
-      //     />
-      //     <div className="gateway-device-card__top-right">
-      //       <h2>{el.deviceName}</h2>
-      //       <p>
-      //         <span>
-      //           <svg
-      //             width="12"
-      //             height="12"
-      //             viewBox="0 0 12 12"
-      //             fill="none"
-      //             xmlns="http://www.w3.org/2000/svg"
-      //           >
-      //             <path
-      //               d="M6 0C3.60363 0 1.65405 1.94958 1.65405 4.34592C1.65405 7.31986 5.54325 11.6858 5.70883 11.8702C5.86437 12.0434 6.13591 12.0431 6.29116 11.8702C6.45675 11.6858 10.3459 7.31986 10.3459 4.34592C10.3459 1.94958 8.39634 0 6 0ZM6 6.53248C4.79433 6.53248 3.81347 5.55159 3.81347 4.34592C3.81347 3.14025 4.79435 2.15939 6 2.15939C7.20565 2.15939 8.18651 3.14027 8.18651 4.34594C8.18651 5.55162 7.20565 6.53248 6 6.53248Z"
-      //               fill="white"
-      //             />
-      //           </svg>
-      //         </span>
-      //         {el.deviceLocation}
-      //       </p>
-      //       <p>
-      //         <span>
-      //           <svg
-      //             width="12"
-      //             height="12"
-      //             viewBox="0 0 12 12"
-      //             fill="none"
-      //             xmlns="http://www.w3.org/2000/svg"
-      //           >
-      //             <g clip-path="url(#clip0_1_12715)">
-      //               <path
-      //                 d="M1.80005 8.45037V10.2004H3.55007L8.71379 5.03664L6.96377 3.28662L1.80005 8.45037Z"
-      //                 fill="white"
-      //               />
-      //               <path
-      //                 d="M10.0635 3.02744L8.97383 1.93777C8.79183 1.75577 8.49549 1.75577 8.31348 1.93777L7.45947 2.79178L9.20949 4.5418L10.0635 3.68779C10.2455 3.50579 10.2455 3.20945 10.0635 3.02744Z"
-      //                 fill="white"
-      //               />
-      //             </g>
-      //             <defs>
-      //               <clipPath id="clip0_1_12715">
-      //                 <rect
-      //                   width="8.4"
-      //                   height="8.4"
-      //                   fill="white"
-      //                   transform="translate(1.80005 1.80005)"
-      //                 />
-      //               </clipPath>
-      //             </defs>
-      //           </svg>
-      //         </span>
-      //         {el.deviceDescription}
-      //       </p>
-      //     </div>
-      //   </div>
-      //   <div className="gateway-device-card__bottom">
-      //     <div className="metrics-card">
-      //       <h4>CO2</h4>
-      //       <p>{airData?.iaqi?.no2?.v}</p>
-      //     </div>
-      //     <div className="metrics-card">
-      //       <h4>Temp</h4>
-      //       <p>{airData?.iaqi?.t?.v}°C</p>
-      //     </div>
-      //     <div className="metrics-card">
-      //       <h4>Metrics</h4>
-      //       <p>{airData?.idx}</p>
-      //     </div>
-      //   </div>
-      // </div>
-      <h1>salut</h1>
+    const deviceAirData = airData[el.deviceName];
+    return deviceAirData ? (
+      <div className="gateway-device-card">
+        <div className="gateway-device-card__top">
+          <ProgressBar
+            value={deviceAirData?.aqi}
+            maxRange={10}
+            title={"PM2.5"}
+            height={75}
+            width={75}
+            colorStart={"#ACF254"}
+            colorEnd={"#20944E"}
+          />
+          <div className="gateway-device-card__top-right">
+            <h2>{el.deviceName}</h2>
+            <p>
+              <span>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 0C3.60363 0 1.65405 1.94958 1.65405 4.34592C1.65405 7.31986 5.54325 11.6858 5.70883 11.8702C5.86437 12.0434 6.13591 12.0431 6.29116 11.8702C6.45675 11.6858 10.3459 7.31986 10.3459 4.34592C10.3459 1.94958 8.39634 0 6 0ZM6 6.53248C4.79433 6.53248 3.81347 5.55159 3.81347 4.34592C3.81347 3.14025 4.79435 2.15939 6 2.15939C7.20565 2.15939 8.18651 3.14027 8.18651 4.34594C8.18651 5.55162 7.20565 6.53248 6 6.53248Z"
+                    fill="white"
+                  />
+                </svg>
+              </span>
+              {el.deviceLocation}
+            </p>
+            <p>
+              <span>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_1_12715)">
+                    <path
+                      d="M1.80005 8.45037V10.2004H3.55007L8.71379 5.03664L6.96377 3.28662L1.80005 8.45037Z"
+                      fill="white"
+                    />
+                    <path
+                      d="M10.0635 3.02744L8.97383 1.93777C8.79183 1.75577 8.49549 1.75577 8.31348 1.93777L7.45947 2.79178L9.20949 4.5418L10.0635 3.68779C10.2455 3.50579 10.2455 3.20945 10.0635 3.02744Z"
+                      fill="white"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_1_12715">
+                      <rect
+                        width="8.4"
+                        height="8.4"
+                        fill="white"
+                        transform="translate(1.80005 1.80005)"
+                      />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
+              {el.deviceDescription}
+            </p>
+          </div>
+        </div>
+        <div className="gateway-device-card__bottom">
+          <div className="metrics-card">
+            <h4>CO2</h4>
+            <p>{deviceAirData?.iaqi?.no2?.v}</p>
+          </div>
+          <div className="metrics-card">
+            <h4>Temp</h4>
+            <p>{deviceAirData?.iaqi?.t?.v}°C</p>
+          </div>
+          <div className="metrics-card">
+            <h4>Metrics</h4>
+            <p>{deviceAirData?.idx}</p>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div className="gateway-device-card loading">
+        <h2>Loading air data for the {el.deviceName}</h2>
+        <div className="loader"></div>
+      </div>
     );
   });
   return (
