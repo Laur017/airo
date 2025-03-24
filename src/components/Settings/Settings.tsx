@@ -76,8 +76,8 @@ export default function Settings({
         />
       ) : (
         <ChartDevice
-          name={selectedGateway.slice(0, -8)}
           handleSelected={handleSelected}
+          selectedDevices={selectedDevices}
         />
       )}
     </div>
