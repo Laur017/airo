@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
 	MapContainer,
 	TileLayer,
@@ -17,9 +17,11 @@ import axios from 'axios';
 interface MapProps {
 	locations: string[];
 	data: any;
+	selectedItem: any;
+	setSelectedItem: any;
 }
 
-const Map = ({ locations, data }: MapProps) => {
+const Map = ({ locations, data, selectedItem, setSelectedItem }: MapProps) => {
 	const [position, setPosition] = useState<[number, number] | null>(null);
 	const [markers, setMarkers] = useState<
 		{ coords: [number, number]; airData: any; address: any; deviceName: any }[]
@@ -27,6 +29,15 @@ const Map = ({ locations, data }: MapProps) => {
 	const [activeMarkerIndex, setActiveMarkerIndex] = useState<number | null>(
 		null
 	);
+	const [defaultPosition, setDefaultPosition] = useState<
+		[number, number] | null
+	>(null);
+
+	const [defaultVal, setDefaultVal] = useState<any>(null);
+	const [defaultAddress, setDefaultAddress] = useState<any>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	const markerRefs = useRef<(L.Marker | null)[]>([]);
 
 	useEffect(() => {
 		if (navigator.geolocation) {
@@ -34,10 +45,12 @@ const Map = ({ locations, data }: MapProps) => {
 				(position) => {
 					const { latitude, longitude } = position.coords;
 					setPosition([latitude, longitude]);
+					setDefaultPosition([latitude, longitude]);
 				},
 				(error) => {
 					console.error('Error getting geolocation: ', error);
 					setPosition([40.7128, -74.006]);
+					setDefaultPosition([40.7128, -74.006]);
 				}
 			);
 		} else {
@@ -126,10 +139,6 @@ const Map = ({ locations, data }: MapProps) => {
 		}
 	}, [locations, data]);
 
-	const [defaultVal, setDefaultVal] = useState<any>(null);
-	const [defaultAddress, setDefaultAddress] = useState<any>(null);
-	const [error, setError] = useState<string | null>(null);
-
 	useEffect(() => {
 		const loadDefaultData = async (position: [number, number] | null) => {
 			try {
@@ -168,7 +177,7 @@ const Map = ({ locations, data }: MapProps) => {
     </svg>`,
 		iconSize: [36, 52],
 		iconAnchor: [18, 52],
-		popupAnchor: [0, -52],
+		popupAnchor: [0, 290],
 	});
 
 	const generateIconSvg = (pmValue: number, isActive: boolean) => {
@@ -213,6 +222,35 @@ const Map = ({ locations, data }: MapProps) => {
 		}
 	};
 
+	useEffect(() => {
+		const handleSelectedItem = () => {
+			if (!selectedItem) return;
+
+			const selectedIndex = markers.findIndex(
+				(marker) => marker.deviceName === selectedItem.deviceName
+			);
+
+			if (selectedIndex !== -1) {
+				markerRefs.current.forEach((markerRef) => {
+					if (markerRef) {
+						markerRef.closePopup();
+					}
+				});
+
+				setActiveMarkerIndex(selectedIndex);
+
+				setPosition(markers[selectedIndex].coords);
+
+				if (markerRefs.current[selectedIndex]) {
+					markerRefs.current[selectedIndex]?.openPopup();
+				}
+			}
+		};
+
+		handleSelectedItem();
+		setSelectedItem(null);
+	}, [selectedItem, markers]);
+
 	if (!position || !markers || !defaultAddress || !defaultVal) {
 		return <Spinner />;
 	}
@@ -229,7 +267,7 @@ const Map = ({ locations, data }: MapProps) => {
 				<TileLayer url='https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' />
 
 				<Marker
-					position={position as LatLngExpression}
+					position={defaultPosition as LatLngExpression}
 					icon={defaultIcon}
 				>
 					<Popup>
@@ -250,16 +288,28 @@ const Map = ({ locations, data }: MapProps) => {
 						return (
 							<Marker
 								key={index}
+								ref={(ref) => {
+									markerRefs.current[index] = ref;
+								}}
 								position={marker.coords}
 								icon={L.divIcon({
 									className: `popup-marker-${index}`,
-									html: generateIconSvg(pmValue, activeMarkerIndex === index),
+									html: generateIconSvg(
+										marker.airData?.aqi,
+										activeMarkerIndex === index
+									),
 									iconSize: [16, 16],
 									iconAnchor: [16, 16],
-									popupAnchor: [0, -16],
+									popupAnchor: [0, 290],
 								})}
 								eventHandlers={{
-									click: () => setActiveMarkerIndex(index),
+									click: () => {
+										if (activeMarkerIndex === index) {
+											setActiveMarkerIndex(null);
+										} else {
+											setActiveMarkerIndex(index);
+										}
+									},
 									popupclose: () => setActiveMarkerIndex(null),
 								}}
 							>
