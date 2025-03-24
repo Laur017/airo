@@ -1,10 +1,13 @@
+import { useState, useRef, useEffect } from 'react';
 import logo from '../../assets/logo.png';
+import Spinner from '../Spinner/Spinner';
 
 interface HeaderProps {
 	handleSettings: (val: boolean) => void;
 	profile: any;
 	open: boolean;
 	data: any;
+	setSelectedItem: any;
 }
 
 export default function Header({
@@ -12,8 +15,48 @@ export default function Header({
 	profile,
 	open,
 	data,
+	setSelectedItem,
 }: HeaderProps) {
-	console.log(data);
+	const [isActive, setIsActive] = useState(false);
+	const [searchQuery, setSearchQuery] = useState('');
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchQuery(e.target.value);
+	};
+
+	const handleSearchFocus = () => {
+		setIsActive(true);
+	};
+
+	const handleClickOutside = (event: MouseEvent) => {
+		if (
+			dropdownRef.current &&
+			!dropdownRef.current.contains(event.target as Node)
+		) {
+			setIsActive(false);
+		}
+	};
+
+	useEffect(() => {
+		document.addEventListener('click', handleClickOutside);
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	}, []);
+
+	if (!data) return <Spinner />;
+
+	const filteredData = data.filter((el: any) =>
+		el.deviceLocation.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
+	const handleItemClick = (item: any) => {
+		setSelectedItem(item);
+		setIsActive(false);
+		setSearchQuery('');
+	};
+
 	return (
 		<div className='header'>
 			<img
@@ -21,7 +64,10 @@ export default function Header({
 				alt='AIRO Logo'
 				className='header__logo'
 			/>
-			<div className='header__search'>
+			<div
+				className='header__search'
+				ref={dropdownRef}
+			>
 				<span className='clasterization'>Voronoi clasterization</span>
 				<div className='switch'>
 					<input
@@ -34,50 +80,70 @@ export default function Header({
 						className='slider'
 					></label>
 				</div>
-				<div className='search-bar'>
-					<div className='search-icon'>
-						<svg
-							width='13'
-							height='13'
-							viewBox='0 0 13 13'
-							fill='none'
-							xmlns='http://www.w3.org/2000/svg'
-						>
-							<path
-								d='M12.3652 5.88679L11.1243 5.88679C10.8646 5.1798 10.2009 4.6748 9.40733 4.6748C8.61377 4.6748 7.95006 5.1798 7.69035 5.88679L0.620441 5.88679C0.288588 5.88679 0.01445 6.16093 0.01445 6.50721C0.01445 6.8535 0.288589 7.12764 0.63487 7.12764L7.70478 7.12764C7.96449 7.83463 8.6282 8.33963 9.42176 8.33963C10.2153 8.33963 10.8646 7.8202 11.1243 7.11321L12.3796 7.11321C12.7259 7.11321 13 6.83907 13 6.49279C13 6.1465 12.7114 5.88679 12.3652 5.88679Z'
-								fill='white'
-							/>
-							<path
-								d='M12.3651 10.5616L5.1798 10.5616C4.92009 9.8546 4.25638 9.34961 3.46282 9.34961C2.66925 9.34961 2.00555 9.8546 1.74584 10.5616L0.620419 10.5616C0.274137 10.5616 -2.90659e-06 10.8357 -2.91676e-06 11.1676C-2.92738e-06 11.5139 0.274136 11.788 0.620418 11.788L1.76026 11.788C2.00555 12.495 2.66925 13 3.46282 13C4.25638 13 4.92009 12.4806 5.19423 11.7736L12.3796 11.7736C12.7114 11.788 13 11.5139 13 11.1532C13 10.8357 12.7114 10.5616 12.3651 10.5616Z'
-								fill='white'
-							/>
-							<path
-								d='M0.620388 2.4384L3.9245 2.4384C4.18422 3.1454 4.84793 3.65039 5.64149 3.65039C6.43505 3.65039 7.08433 3.1454 7.35848 2.4384L12.3651 2.4384C12.7114 2.4384 13 2.16426 13 1.81798C13 1.4717 12.7114 1.19756 12.3651 1.19756L7.34405 1.19756C7.08433 0.504995 6.43505 -3.42642e-07 5.64149 -3.84061e-07C4.84793 -4.25479e-07 4.18422 0.504995 3.9245 1.21199L0.634817 1.21199C0.288534 1.21199 0.0143938 1.48613 0.0143937 1.83241C0.0143937 2.16426 0.274105 2.4384 0.620388 2.4384Z'
-								fill='white'
-							/>
-						</svg>
+				<div className={`search-bar ${isActive ? 'active' : ''}`}>
+					<div className='search-bar__container'>
+						<div className='search-icon'>
+							<svg
+								width='13'
+								height='13'
+								viewBox='0 0 13 13'
+								fill='none'
+								xmlns='http://www.w3.org/2000/svg'
+							>
+								<path
+									d='M12.3652 5.88679L11.1243 5.88679C10.8646 5.1798 10.2009 4.6748 9.40733 4.6748C8.61377 4.6748 7.95006 5.1798 7.69035 5.88679L0.620441 5.88679C0.288588 5.88679 0.01445 6.16093 0.01445 6.50721C0.01445 6.8535 0.288589 7.12764 0.63487 7.12764L7.70478 7.12764C7.96449 7.83463 8.6282 8.33963 9.42176 8.33963C10.2153 8.33963 10.8646 7.8202 11.1243 7.11321L12.3796 7.11321C12.7259 7.11321 13 6.83907 13 6.49279C13 6.1465 12.7114 5.88679 12.3652 5.88679Z'
+									fill='white'
+								/>
+								<path
+									d='M12.3651 10.5616L5.1798 10.5616C4.92009 9.8546 4.25638 9.34961 3.46282 9.34961C2.66925 9.34961 2.00555 9.8546 1.74584 10.5616L0.620419 10.5616C0.274137 10.5616 -2.90659e-06 10.8357 -2.91676e-06 11.1676C-2.92738e-06 11.5139 0.274136 11.788 0.620418 11.788L1.76026 11.788C2.00555 12.495 2.66925 13 3.46282 13C4.25638 13 4.92009 12.4806 5.19423 11.7736L12.3796 11.7736C12.7114 11.788 13 11.5139 13 11.1532C13 10.8357 12.7114 10.5616 12.3651 10.5616Z'
+									fill='white'
+								/>
+								<path
+									d='M0.620388 2.4384L3.9245 2.4384C4.18422 3.1454 4.84793 3.65039 5.64149 3.65039C6.43505 3.65039 7.08433 3.1454 7.35848 2.4384L12.3651 2.4384C12.7114 2.4384 13 2.16426 13 1.81798C13 1.4717 12.7114 1.19756 12.3651 1.19756L7.34405 1.19756C7.08433 0.504995 6.43505 -3.42642e-07 5.64149 -3.84061e-07C4.84793 -4.25479e-07 4.18422 0.504995 3.9245 1.21199L0.634817 1.21199C0.288534 1.21199 0.0143938 1.48613 0.0143937 1.83241C0.0143937 2.16426 0.274105 2.4384 0.620388 2.4384Z'
+									fill='white'
+								/>
+							</svg>
+						</div>
+						<input
+							className='search-input'
+							type='text'
+							placeholder='Type address...'
+							value={searchQuery}
+							onChange={handleSearchChange}
+							onFocus={handleSearchFocus}
+						/>
+						<div className='search-action-icon'>
+							<svg
+								width='20'
+								height='18'
+								viewBox='0 0 20 18'
+								fill='none'
+								xmlns='http://www.w3.org/2000/svg'
+							>
+								<path
+									fillRule='evenodd'
+									clipRule='evenodd'
+									d='M12.8515 10.4999H12.2347L12.0203 10.2944C12.7777 9.44166 13.2384 8.33616 13.2384 7.12491C13.2384 4.43242 10.9777 2.24991 8.18856 2.24991C5.39947 2.24991 3.13867 4.43242 3.13867 7.12491C3.13867 9.81741 5.39947 11.9999 8.18856 11.9999C9.44326 11.9999 10.5876 11.5559 11.471 10.8254L11.6854 11.0309V11.6249L15.5684 15.3682L16.7268 14.2499L12.8515 10.4999ZM8.18856 10.4999C6.25717 10.4999 4.69248 8.98941 4.69248 7.12491C4.69248 5.26116 6.25717 3.74991 8.18856 3.74991C10.1192 3.74991 11.6846 5.26116 11.6846 7.12491C11.6846 8.98941 10.1192 10.4999 8.18856 10.4999Z'
+									fill='#828282'
+								/>
+							</svg>
+						</div>
 					</div>
-					<input
-						className='search-input'
-						type='text'
-						placeholder='Type address...'
-					/>
-					<div className='search-action-icon'>
-						<svg
-							width='20'
-							height='18'
-							viewBox='0 0 20 18'
-							fill='none'
-							xmlns='http://www.w3.org/2000/svg'
-						>
-							<path
-								fillRule='evenodd'
-								clipRule='evenodd'
-								d='M12.8515 10.4999H12.2347L12.0203 10.2944C12.7777 9.44166 13.2384 8.33616 13.2384 7.12491C13.2384 4.43242 10.9777 2.24991 8.18856 2.24991C5.39947 2.24991 3.13867 4.43242 3.13867 7.12491C3.13867 9.81741 5.39947 11.9999 8.18856 11.9999C9.44326 11.9999 10.5876 11.5559 11.471 10.8254L11.6854 11.0309V11.6249L15.5684 15.3682L16.7268 14.2499L12.8515 10.4999ZM8.18856 10.4999C6.25717 10.4999 4.69248 8.98941 4.69248 7.12491C4.69248 5.26116 6.25717 3.74991 8.18856 3.74991C10.1192 3.74991 11.6846 5.26116 11.6846 7.12491C11.6846 8.98941 10.1192 10.4999 8.18856 10.4999Z'
-								fill='#828282'
-							/>
-						</svg>
-					</div>
+					<ul className={`search-bar__dropdown ${isActive ? 'active' : ''}`}>
+						{filteredData.length > 0 ? (
+							filteredData.map((el: any) => (
+								<li
+									key={el.id}
+									className='search-bar__dropdown__el'
+									onClick={() => handleItemClick(el)}
+								>
+									{el.deviceLocation}
+								</li>
+							))
+						) : (
+							<li className='search-bar__dropdown__el'>No results found</li>
+						)}
+					</ul>
 				</div>
 			</div>
 

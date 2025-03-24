@@ -15,6 +15,7 @@
 
 body {
   min-height: 100vh;
+  overflow: hidden;
 }
 
 a {
@@ -111,7 +112,7 @@ html {
   padding: 0 2rem;
   height: 6rem;
   box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.15);
-  z-index: 1;
+  z-index: 100;
 }
 .header__logo {
   width: 20rem;
@@ -153,7 +154,7 @@ html {
   transform: rotate(0deg);
 }
 
-.search-bar {
+.search-bar__container {
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -163,11 +164,12 @@ html {
   padding: 0 1rem;
   border-radius: 1.7rem;
   border: 1px solid rgba(255, 255, 255, 0.25);
+  position: relative;
 }
 
 .search-input {
   all: unset;
-  margin-right: auto;
+  width: 100%;
   font-size: 1.2rem;
   font-weight: 600;
   color: #6a6a6a;
@@ -231,6 +233,42 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(2.5rem);
+}
+
+.search-bar__dropdown {
+  position: absolute;
+  top: 5rem;
+  left: 59.9rem;
+  width: 40rem;
+  max-height: 20rem;
+  background-color: #3c444c;
+  border-radius: 1rem;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  display: none;
+}
+.search-bar__dropdown::-webkit-scrollbar {
+  display: none;
+}
+
+.search-bar__dropdown.active {
+  display: block;
+}
+
+.search-bar__dropdown__el {
+  padding: 0.8rem 1rem;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #ffffff;
+  opacity: 60%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-radius: 0.2rem;
+}
+.search-bar__dropdown__el:hover {
+  background-color: #6202ee;
+  color: #ffffff;
+  opacity: 100%;
 }
 
 .spinner-container {
@@ -315,6 +353,10 @@ input:checked + .slider:before {
   background: #3c444c !important;
   width: 50rem !important;
   height: 25rem !important;
+}
+
+.leaflet-container {
+  height: 95vh !important;
 }
 
 .devices {
