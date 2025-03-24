@@ -3,7 +3,7 @@ import GatewayForm from "./GatewayForm";
 import DeviceForm from "./DeviceForm";
 import { useParams } from "react-router-dom";
 import { firestore } from "../../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 import axios from "axios";
 
 interface AddNewProps {
@@ -20,7 +20,6 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
   const [deviceDescription, setDeviceDescription] = useState<string>("");
   const [gatewaySelected, setGatewaySelected] = useState<string>("");
   const [deviceLocation, setDeviceLocation] = useState<string>("");
-  const [deviceAirQuality, setDeviceAirQuality] = useState<any[]>([]);
 
   const handleForm = async () => {
     console.log("clicked add form");
@@ -68,6 +67,7 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
           let lat;
           let lon;
           let url: string;
+          let devAirData;
 
           if (response.data.length > 0) {
             console.log("aici ar trebui sa am latitudinea si longitudinea");
@@ -82,7 +82,7 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
 
               if (resp.data.status === "ok") {
                 console.log("resp data data");
-                console.log(resp.data.data);
+                devAirData = resp.data.data;
               }
             }
           }
@@ -94,6 +94,7 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
             gatewaySelected: gatewaySelected,
             deviceLocation: deviceLocation,
             deviceCoords: [lat, lon],
+            deviceAirData: devAirData,
           };
         } catch (error) {
           properData = false;
@@ -110,7 +111,10 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
       setDeviceLocation("");
 
       if (properData) {
-        addDoc(ref, data);
+        const docRef = await addDoc(ref, data);
+        const generatedId = docRef.id;
+
+        await updateDoc(docRef, { id: generatedId });
         closeForm(false, 1);
       } else {
         closeForm(false, 2);

@@ -817,13 +817,15 @@ input:checked + .slider:before {
 }
 .chart-device-content__grid-card {
   background-color: #3c444c;
-  padding: 2rem;
+  padding: 2rem 2rem 0 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 0.3rem;
   box-shadow: 0px 14.64px 19.52px 0px rgba(0, 0, 0, 0.1019607843);
   gap: 2rem;
+  position: relative;
+  overflow: hidden;
 }
 .chart-device-content__grid-card h2 {
   font-weight: 700;
@@ -836,7 +838,13 @@ input:checked + .slider:before {
   rotate: 180deg;
   position: relative;
 }
-.chart-device-content__grid-card > div::after {
+.chart-device-content__grid-card .line-chart {
+  rotate: 0deg;
+  width: 120%;
+  height: 10rem;
+  position: relative;
+}
+.chart-device-content__grid-card .known-data::after {
   content: "";
   width: 4rem;
   height: 4rem;
@@ -845,6 +853,12 @@ input:checked + .slider:before {
   bottom: 4rem;
   rotate: 45deg;
   left: 2rem;
+}
+.chart-device-content__grid-card > p {
+  font-weight: 600;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 57%;
 }
 .chart-device-bottom {
   width: 100%;

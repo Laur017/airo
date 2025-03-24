@@ -1,35 +1,244 @@
 import { useState } from "react";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+import { Doughnut, Line } from "react-chartjs-2";
+import { deleteDoc, doc } from "firebase/firestore";
+import { firestore } from "../../firebase";
+import { useParams } from "react-router-dom";
 interface ChartDeviceProps {
-  name: string;
   handleSelected: (val: string, arr: any[]) => void;
+  selectedDevices: any[];
 }
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement
+);
 
 export default function ChartDevice({
-  name,
   handleSelected,
+  selectedDevices,
 }: ChartDeviceProps) {
+  const { id } = useParams();
+  const [device] = selectedDevices;
   const [period, setPeriod] = useState<1 | 2 | 3>(1);
+  const deviceRef = doc(firestore, `${id}`, device.id);
 
-  const pieChartData = {
-    label: ["facebook", "insta"],
+  const pmChartData = {
     datasets: [
       {
-        label: "time spent",
-        data: [58, 42],
+        data: [
+          device.deviceAirData.iaqi.pm10.v * 4.8,
+          100 - device.deviceAirData.iaqi.pm10.v * 4.8,
+        ],
         backgroundColor: ["#ACF254", "rgba(48, 54, 61, 0.7)"],
-        hoverOffset: 4,
+        borderWidth: 0,
       },
     ],
   };
+  const coChartData = {
+    datasets: [
+      {
+        data: [
+          device.deviceAirData.iaqi.no2.v * 9.5,
+          100 - device.deviceAirData.iaqi.no2.v * 9.5,
+        ],
+        backgroundColor: ["#FFC700", "rgba(48, 54, 61, 0.7)"],
+        borderWidth: 0,
+      },
+    ],
+  };
+  const temperatureChartData = {
+    datasets: [
+      {
+        data: [
+          device.deviceAirData.iaqi.t.v * 5,
+          100 - device.deviceAirData.iaqi.t.v * 5,
+        ],
+        backgroundColor: ["#DBFF00", "rgba(48, 54, 61, 0.7)"],
+        borderWidth: 0,
+      },
+    ],
+  };
+  const unknownChartData = {
+    datasets: [
+      {
+        data: [100],
+        backgroundColor: ["rgba(48, 54, 61, 0.7)"],
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const options: any = {
+    cutout: "75%",
+    interaction: {
+      mode: null,
+    },
+  };
+  const options2: any = {
+    cutout: "90%",
+    interaction: {
+      mode: null,
+    },
+  };
+  const options3: any = {
+    plugins: {
+      legend: false,
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        beginAtZero: true,
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
+  const pmLineChart = {
+    labels: ["07:00", "13:00", "21:00"],
+    datasets: [
+      {
+        data: [
+          device.deviceAirData.forecast.daily.pm10[0].avg,
+          device.deviceAirData.forecast.daily.pm10[0].max,
+          device.deviceAirData.forecast.daily.pm10[0].min,
+        ],
+        borderColor: "#FF5C00",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+  const coLineChart = {
+    labels: ["07:00", "13:00", "21:00"],
+    datasets: [
+      {
+        data: [
+          device.deviceAirData.forecast.daily.pm25[0].min,
+          device.deviceAirData.forecast.daily.pm25[0].max,
+          device.deviceAirData.forecast.daily.pm25[0].avg,
+        ],
+        borderColor: "#D2F254",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+  const tempLineChart = {
+    labels: ["07:00", "13:00", "21:00"],
+    datasets: [
+      {
+        data: [
+          device.deviceAirData.forecast.daily.o3[0].min,
+          device.deviceAirData.forecast.daily.o3[0].max,
+          device.deviceAirData.forecast.daily.o3[0].avg,
+        ],
+        borderColor: "#FFA002",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+  const unknownLineChart = {
+    labels: ["07:00", "13:00", "21:00"],
+    datasets: [
+      {
+        data: [
+          device.deviceAirData.forecast.daily.uvi[0].max,
+          device.deviceAirData.forecast.daily.uvi[0].min,
+          device.deviceAirData.forecast.daily.uvi[0].avg,
+        ],
+        borderColor: "#CF64D1",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const pmLineChartWeek = {
+    labels: device.deviceAirData.forecast.daily.pm10.map(
+      (el: any) => el.day.split("-")[2]
+    ),
+    datasets: [
+      {
+        data: device.deviceAirData.forecast.daily.pm10.map((el: any) => el.avg),
+        borderColor: "#FF5C00",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+  const coLineChartWeek = {
+    labels: device.deviceAirData.forecast.daily.pm25.map(
+      (el: any) => el.day.split("-")[2]
+    ),
+    datasets: [
+      {
+        data: device.deviceAirData.forecast.daily.pm25.map((el: any) => el.avg),
+        borderColor: "#D2F254",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+  const tempLineChartWeek = {
+    labels: device.deviceAirData.forecast.daily.o3.map(
+      (el: any) => el.day.split("-")[2]
+    ),
+    datasets: [
+      {
+        data: device.deviceAirData.forecast.daily.o3.map((el: any) => el.avg),
+        borderColor: "#FFA002",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+  const unknownLineChartWeek = {
+    labels: device.deviceAirData.forecast.daily.uvi.map(
+      (el: any) => el.day.split("-")[2]
+    ),
+    datasets: [
+      {
+        data: device.deviceAirData.forecast.daily.uvi.map((el: any) => el.avg),
+        borderColor: "#CF64D1",
+        pointBorderColor: "transparent",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const handleRemoveDevice = async () => {
+    try {
+      await deleteDoc(deviceRef);
+      handleSelected("", []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="chart-device">
       <div className="chart-device-top">
         <h1>
-          {name}
+          {device.deviceName}
           <span onClick={() => handleSelected("", [])}>
             <svg
               width="23"
@@ -60,7 +269,7 @@ export default function ChartDevice({
               />
             </svg>
           </span>
-          Diagon Alley, 12
+          {device.deviceLocation}
         </p>
         <p>
           <span>
@@ -93,7 +302,7 @@ export default function ChartDevice({
               </defs>
             </svg>
           </span>
-          Comment ...
+          {device.deviceDescription}
         </p>
       </div>
       <div className="chart-device-content">
@@ -117,26 +326,95 @@ export default function ChartDevice({
             <p>Week</p>
           </button>
         </div>
-        <div className="chart-device-content__grid">
-          <div className="chart-device-content__grid-card">
-            <h2>PM2.5</h2>
-            <div>
-              <Doughnut data={pieChartData} options={{}} />
+        {period === 1 ? (
+          <div className="chart-device-content__grid">
+            <div className="chart-device-content__grid-card">
+              <h2>PM2.5</h2>
+              <div className="known-data">
+                <Doughnut data={pmChartData} options={options} />
+              </div>
+              <p>{device.deviceAirData.iaqi.pm10.v}</p>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>CO2</h2>
+              <div className="known-data">
+                <Doughnut data={coChartData} options={options} />
+              </div>
+              <p>{device.deviceAirData.iaqi.no2.v}</p>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>Temperature</h2>
+              <div className="known-data">
+                <Doughnut data={temperatureChartData} options={options} />
+              </div>
+              <p>{device.deviceAirData.iaqi.t.v} °C</p>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>Unkown Metrics</h2>
+              <div>
+                <Doughnut data={unknownChartData} options={options2} />
+              </div>
+              <p>{device.deviceAirData.iaqi.dew.v}</p>
             </div>
           </div>
-          <div className="chart-device-content__grid-card">
-            <h2>CO2</h2>
+        ) : period === 2 ? (
+          <div className="chart-device-content__grid">
+            <div className="chart-device-content__grid-card">
+              <h2>PM2.5</h2>
+              <div className="line-chart">
+                <Line data={pmLineChart} options={options3} />
+              </div>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>CO2</h2>
+              <div className="line-chart">
+                <Line data={coLineChart} options={options3} />
+              </div>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>Temperature</h2>
+              <div className="line-chart">
+                <Line data={tempLineChart} options={options3} />
+              </div>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>Unkown Metrics</h2>
+              <div className="line-chart">
+                <Line data={unknownLineChart} options={options3} />
+              </div>
+            </div>
           </div>
-          <div className="chart-device-content__grid-card">
-            <h2>Temperature</h2>
+        ) : (
+          <div className="chart-device-content__grid">
+            <div className="chart-device-content__grid-card">
+              <h2>PM2.5</h2>
+              <div className="line-chart">
+                <Line data={pmLineChartWeek} options={options3} />
+              </div>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>CO2</h2>
+              <div className="line-chart">
+                <Line data={coLineChartWeek} options={options3} />
+              </div>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>Temperature</h2>
+              <div className="line-chart">
+                <Line data={tempLineChartWeek} options={options3} />
+              </div>
+            </div>
+            <div className="chart-device-content__grid-card">
+              <h2>Unkown Metrics</h2>
+              <div className="line-chart">
+                <Line data={unknownLineChartWeek} options={options3} />
+              </div>
+            </div>
           </div>
-          <div className="chart-device-content__grid-card">
-            <h2>Unkown Metrics</h2>
-          </div>
-        </div>
+        )}
       </div>
       <div className="chart-device-bottom">
-        <h2>
+        <h2 onClick={() => handleRemoveDevice()}>
           <span>
             <svg
               width="36"
