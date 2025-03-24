@@ -80,31 +80,32 @@ function App() {
 	const [data, setData] = useState<any>('');
 	const [selectedItem, setSelectedItem] = useState<any>(null);
 
-	useEffect(() => {
-		if (!id) return;
 
-		const colRef = collection(firestore, id.toString());
-		const getAllDevices = async () => {
-			try {
-				const data = await getDocs(colRef);
-				const allData = data.docs
-					.map((doc) => {
-						const docData = doc.data();
-						return docData && typeof docData === 'object'
-							? { ...docData, id: doc.id }
-							: null;
-					})
-					.filter((el: any) => el.type === 'device');
-				setLocations(allData.map((el: any) => el.deviceLocation));
-				setData(allData);
-			} catch (error) {
-				console.error('Error fetching devices:', error);
-			}
-		};
-		getAllDevices();
-	}, [id, updateMap]);
+  useEffect(() => {
+    if (!id) return;
 
-	return (
+    const colRef = collection(firestore, id.toString());
+    const getAllDevices = async () => {
+      try {
+        const data = await getDocs(colRef);
+        const allData = data.docs
+          .map((doc) => {
+            const docData = doc.data();
+            return docData && typeof docData === "object"
+              ? { ...docData, id: doc.id }
+              : null;
+          })
+          .filter((el: any) => el.type === "device");
+        setLocations(allData.map((el: any) => el.deviceLocation));
+        setData(allData);
+      } catch (error) {
+        console.error("Error fetching devices:", error);
+      }
+    };
+    getAllDevices();
+  }, [id, updateMap]);
+
+return (
 		<div className='app'>
 			<Header
 				handleSettings={handleSettings}

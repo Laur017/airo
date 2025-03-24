@@ -93,9 +93,7 @@ export default function AddNew({ closeForm, gateways }: AddNewProps) {
             deviceDescription: deviceDescription,
             gatewaySelected: gatewaySelected,
             deviceLocation: deviceLocation,
-            // co2: //,
-            // pm: //,
-            // temp: //,
+            deviceCoords: [lat, lon],
           };
         } catch (error) {
           properData = false;

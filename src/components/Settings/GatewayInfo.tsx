@@ -1,90 +1,102 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
+import ProgressBar from "../PopupInfo/ProgressBar";
 
 interface GatewayFormProps {
-	name: string;
-	handleSelected: (val: string, arr: any[]) => void;
-	selectedDevices: any[];
+  name: string;
+  handleSelected: (val: string, arr: any[]) => void;
+  selectedDevices: any[];
 }
 
 export default function GatewayInfo({
-	name,
-	handleSelected,
-	selectedDevices,
+  name,
+  handleSelected,
+  selectedDevices,
 }: GatewayFormProps) {
-	console.log(selectedDevices);
+  const [airData, setAirData] = useState<any>([]);
+  const fetchCoordinatesFromAddress = async (address: string) => {
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search`,
+        {
+          params: { q: address, format: "json", addressdetails: 1, limit: 1 },
+        }
+      );
+      if (response.data.length > 0) {
+        const { lat, lon } = response.data[0];
+        return [parseFloat(lat), parseFloat(lon)];
+      }
+    } catch (error) {
+      console.error("Error fetching coordinates:", error);
+    }
+    return null;
+  };
+
+  const fetchAirQualityData = async (lat: number, lon: number) => {
+    try {
+      const url = `https://api.waqi.info/feed/geo:${lat};${lon}/?token=${
+        import.meta.env.VITE_API_KEY
+      }`;
+      const response = await axios.get(url);
+      if (response.data.status === "ok") {
+        return response.data.data;
+      }
+    } catch (error) {
+      console.error("Error fetching air quality data:", error);
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const getAirData = async () => {
+      const dataAir: any = {};
+
+      for (const el of selectedDevices) {
+        const coords = await fetchCoordinatesFromAddress(el.deviceLocation);
+        if (coords) {
+          const [lat, lon] = coords;
+          const airDetails = await fetchAirQualityData(lat, lon);
+          if (airDetails) {
+            dataAir[el.deviceName] = airDetails;
+          }
+        }
+      }
+
+      setAirData(dataAir);
+    };
+
+    getAirData();
+  }, [selectedDevices]);
 
   const Devices = selectedDevices.map((el: any) => {
-    return (
+    const deviceAirData = airData[el.deviceName];
+    return deviceAirData ? (
       <div className="gateway-device-card">
         <div className="gateway-device-card__top">
-          <div className="gateway-device-card__top-left">
-            <h3>7.8</h3>
-            <h4>PM2.5</h4>
-          </div>
+          <ProgressBar
+            value={deviceAirData?.aqi}
+            maxRange={10}
+            title={"PM2.5"}
+            height={75}
+            width={75}
+            colorStart={"#ACF254"}
+            colorEnd={"#20944E"}
+          />
           <div className="gateway-device-card__top-right">
             <h2>{el.deviceName}</h2>
             <p>
               <span>
                 <svg
-                  width="44"
-                  height="40"
-                  viewBox="0 0 44 40"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <g
-                    clip-path="url(#clip0_1_8263)"
-                    filter="url(#filter0_d_1_8263)"
-                  >
-                    <path
-                      d="M26 6.35294C21.3483 6.35294 17.5638 10.1374 17.5638 14.7891C17.5638 20.5621 25.1134 29.0371 25.4348 29.395C25.7367 29.7313 26.2639 29.7307 26.5652 29.395C26.8867 29.0371 34.4363 20.5621 34.4363 14.7891C34.4362 10.1374 30.6517 6.35294 26 6.35294ZM26 19.0336C23.6596 19.0336 21.7556 17.1296 21.7556 14.7891C21.7556 12.4487 23.6596 10.5447 26 10.5447C28.3404 10.5447 30.2444 12.4488 30.2444 14.7892C30.2444 17.1296 28.3404 19.0336 26 19.0336Z"
-                      fill="white"
-                    />
-                  </g>
-                  <defs>
-                    <filter
-                      id="filter0_d_1_8263"
-                      x="0"
-                      y="-6"
-                      width="52"
-                      height="52"
-                      filterUnits="userSpaceOnUse"
-                      color-interpolation-filters="sRGB"
-                    >
-                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                      <feColorMatrix
-                        in="SourceAlpha"
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                        result="hardAlpha"
-                      />
-                      <feOffset dy="2" />
-                      <feGaussianBlur stdDeviation="4" />
-                      <feColorMatrix
-                        type="matrix"
-                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in2="BackgroundImageFix"
-                        result="effect1_dropShadow_1_8263"
-                      />
-                      <feBlend
-                        mode="normal"
-                        in="SourceGraphic"
-                        in2="effect1_dropShadow_1_8263"
-                        result="shape"
-                      />
-                    </filter>
-                    <clipPath id="clip0_1_8263">
-                      <rect
-                        width="36"
-                        height="36"
-                        fill="white"
-                        transform="translate(8)"
-                      />
-                    </clipPath>
-                  </defs>
+                  <path
+                    d="M6 0C3.60363 0 1.65405 1.94958 1.65405 4.34592C1.65405 7.31986 5.54325 11.6858 5.70883 11.8702C5.86437 12.0434 6.13591 12.0431 6.29116 11.8702C6.45675 11.6858 10.3459 7.31986 10.3459 4.34592C10.3459 1.94958 8.39634 0 6 0ZM6 6.53248C4.79433 6.53248 3.81347 5.55159 3.81347 4.34592C3.81347 3.14025 4.79435 2.15939 6 2.15939C7.20565 2.15939 8.18651 3.14027 8.18651 4.34594C8.18651 5.55162 7.20565 6.53248 6 6.53248Z"
+                    fill="white"
+                  />
                 </svg>
               </span>
               {el.deviceLocation}
@@ -127,17 +139,22 @@ export default function GatewayInfo({
         <div className="gateway-device-card__bottom">
           <div className="metrics-card">
             <h4>CO2</h4>
-            <p>695.5</p>
+            <p>{deviceAirData?.iaqi?.no2?.v}</p>
           </div>
           <div className="metrics-card">
             <h4>Temp</h4>
-            <p>13 C</p>
+            <p>{deviceAirData?.iaqi?.t?.v}°C</p>
           </div>
           <div className="metrics-card">
             <h4>Metrics</h4>
-            <p>444.2</p>
+            <p>{deviceAirData?.idx}</p>
           </div>
         </div>
+      </div>
+    ) : (
+      <div className="gateway-device-card loading">
+        <h2>Loading air data for the {el.deviceName}</h2>
+        <div className="loader"></div>
       </div>
     );
   });
@@ -164,5 +181,4 @@ export default function GatewayInfo({
       <div className="gateway-info__bottom"></div>
     </div>
   );
-
 }
